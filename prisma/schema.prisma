@@ -1,0 +1,171 @@
+// CampusMercado — student-verified marketplace (Cuba pilot)
+// Dev: SQLite. Production: switch `provider` to "postgresql" (schema is written to be portable:
+// no DB enums, no scalar arrays — enum-like fields are String with documented allowed values).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // LOCAL DEV: sqlite. PRODUCTION: change to "postgresql" (the schema is portable),
+  // set DATABASE_URL to your Postgres connection string, then run `npm run db:push`.
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────── Users & verification ───────────────────────────
+
+model User {
+  id                 String   @id @default(cuid())
+  email              String   @unique
+  phone              String?
+  passwordHash       String
+  name               String
+  role               String   @default("student") // student | admin
+  verificationStatus String   @default("unverified") // unverified | pending | approved | rejected
+  dateOfBirth        DateTime? // collected at registration; matched against the CI number
+  university         String?
+  campus             String?
+  locale             String   @default("es") // es | en
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  listings     Listing[]
+  verification StudentVerification?
+  payments     Payment[]
+}
+
+model StudentVerification {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  idCardImageUrl String
+  ciNumber       String? // the 11-digit No. CI the student typed from their card
+  ciAutoMatch    Boolean  @default(false) // did first 6 digits of CI match the DOB automatically
+  status         String   @default("pending") // pending | approved | rejected
+  reviewedById   String? // admin user id (no FK to keep it simple for the pilot)
+  reviewNotes    String?
+  ocrResult      String? // JSON blob reserved for future automated handwriting OCR/AI verification
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ─────────────────────────── Catalog & listings ───────────────────────────
+
+model Category {
+  id        String     @id @default(cuid())
+  slug      String     @unique
+  nameEs    String
+  nameEn    String
+  sortOrder Int        @default(0)
+  parentId  String?
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryTree")
+  listings  Listing[]
+}
+
+model Listing {
+  id            String   @id @default(cuid())
+  sellerId      String
+  seller        User     @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  title         String
+  description   String
+  priceAmount   Int      @default(0) // whole currency units
+  currency      String   @default("CUP") // CUP | USD | MLC
+  categoryId    String
+  category      Category @relation(fields: [categoryId], references: [id])
+  campus        String?
+  status        String   @default("active") // active | sold | hidden | pending
+  contactMethod String   @default("phone") // phone | whatsapp | email
+  contactValue  String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  images  ListingImage[]
+  boosts  FeaturedBoost[]
+  reports Report[]
+
+  @@index([categoryId])
+  @@index([status])
+  @@index([campus])
+}
+
+model ListingImage {
+  id        String  @id @default(cuid())
+  listingId String
+  listing   Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  url       String
+  sortOrder Int     @default(0)
+}
+
+// ─────────────────────────── Monetization ───────────────────────────
+
+model FeaturedBoost {
+  id        String    @id @default(cuid())
+  listingId String
+  listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  tier      String    @default("standard") // standard | premium
+  status    String    @default("pending") // pending | active | expired
+  startsAt  DateTime?
+  expiresAt DateTime?
+  paymentId String?
+  createdAt DateTime  @default(now())
+
+  @@index([status])
+}
+
+model Advertiser {
+  id           String   @id @default(cuid())
+  name         String
+  contactEmail String?
+  contactPhone String?
+  createdAt    DateTime @default(now())
+  adSlots      AdSlot[]
+}
+
+model AdSlot {
+  id           String      @id @default(cuid())
+  position     String // home_top | sidebar | listing_inline
+  imageUrl     String
+  targetUrl    String
+  advertiserId String?
+  advertiser   Advertiser? @relation(fields: [advertiserId], references: [id])
+  startsAt     DateTime?
+  expiresAt    DateTime?
+  active       Boolean     @default(true)
+  impressions  Int         @default(0)
+  clicks       Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([position, active])
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  purpose         String // boost | ad
+  amount          Int
+  currency        String   @default("CUP")
+  method          String   @default("transfermovil")
+  status          String   @default("pending") // pending | confirmed | rejected
+  reference       String? // Transfermóvil transaction reference entered/uploaded by the payer
+  relatedBoostId  String?
+  relatedAdSlotId String?
+  confirmedById   String? // admin user id
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+}
+
+model Report {
+  id         String   @id @default(cuid())
+  listingId  String
+  listing    Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  reporterId String?
+  reason     String
+  status     String   @default("open") // open | resolved | dismissed
+  createdAt  DateTime @default(now())
+}

@@ -1,0 +1,241 @@
+{
+  "meta": {
+    "title": "CampusMercado — Verified student marketplace",
+    "description": "Buy and sell among verified students. Fast, safe, and built for Cuba."
+  },
+  "nav": {
+    "home": "Home",
+    "post": "Post an ad",
+    "login": "Log in",
+    "register": "Sign up",
+    "myAccount": "My account",
+    "verify": "Verify as student",
+    "admin": "Admin",
+    "logout": "Log out"
+  },
+  "home": {
+    "heroTitle": "The students-only marketplace",
+    "heroSubtitle": "Buy and sell with verified students from your university. Posting is free.",
+    "browseCategories": "Categories",
+    "featured": "Featured ads",
+    "recent": "Recent ads",
+    "postCta": "Post an ad",
+    "noListings": "No ads yet. Be the first to post!",
+    "verifiedBadge": "Verified student",
+    "search": "Search"
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "registerTitle": "Create a student account",
+    "name": "Full name",
+    "email": "Email",
+    "dob": "Date of birth",
+    "password": "Password",
+    "loginButton": "Log in",
+    "registerButton": "Create account",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "goLogin": "Log in",
+    "goRegister": "Sign up",
+    "errors": {
+      "nameShort": "Name is too short.",
+      "emailInvalid": "Invalid email address.",
+      "passwordShort": "Password must be at least 8 characters.",
+      "emailTaken": "That email is already registered.",
+      "invalidCredentials": "Wrong email or password.",
+      "dobRequired": "Please enter your date of birth.",
+      "dobInvalid": "Invalid date of birth.",
+      "required": "This field is required."
+    }
+  },
+  "account": {
+    "title": "My account",
+    "status": "Verification status",
+    "statusUnverified": "Not verified",
+    "statusPending": "Under review",
+    "statusApproved": "Verified",
+    "statusRejected": "Rejected",
+    "verifyCta": "Verify as a student",
+    "verifyPendingMsg": "Your ID is under review. We'll notify you soon.",
+    "verifyApprovedMsg": "You're verified! You can now post ads.",
+    "postAd": "Post an ad"
+  },
+  "verify": {
+    "title": "Student verification",
+    "intro": "Type the No. CI from your card and upload a clear photo of the Carné de Identidad. An admin will review it.",
+    "idLabel": "Carné de Identidad photo (full front)",
+    "cardNote": "The photo must show the full front of the Carné de Identidad: the card title, the No. CI, your photo and your names. Photos showing only the number are not accepted.",
+    "ciLabel": "No. CI (11 digits, handwritten on the card)",
+    "ciHint": "The first 6 digits must match your date of birth (YYMMDD).",
+    "submit": "Submit for review",
+    "pending": "Your ID has already been submitted and is under review.",
+    "approved": "You're already verified.",
+    "success": "Submitted! Your ID is under review.",
+    "errorNoFile": "You must upload an image.",
+    "errorType": "The file must be an image (JPG or PNG).",
+    "errorNoDob": "Your date of birth is missing. Please add it in your registration.",
+    "errorCiFormat": "The No. CI must be exactly 11 digits.",
+    "errorCiMismatch": "The No. CI does not match your date of birth."
+  },
+  "admin": {
+    "title": "Admin panel",
+    "verifications": "Pending verifications",
+    "none": "No pending verifications.",
+    "approve": "Approve",
+    "reject": "Reject",
+    "user": "User",
+    "submitted": "Submitted",
+    "checklistTitle": "Before approving, confirm:",
+    "confirmCard": "The Carné de Identidad is clearly visible in the photo (card title visible).",
+    "confirmCi": "The handwritten No. CI matches the number the student typed."
+  },
+  "post": {
+    "title": "Post an ad",
+    "adTitle": "Title",
+    "adTitlePh": "e.g. Calculus I textbook, like new",
+    "description": "Description",
+    "descriptionPh": "Describe the item, condition, details...",
+    "price": "Price",
+    "currency": "Currency",
+    "category": "Category",
+    "categoryChoose": "Choose a category",
+    "campus": "Campus / Faculty (optional)",
+    "campusPh": "e.g. Engineering Faculty",
+    "contactMethod": "Contact method",
+    "contactPhone": "Phone",
+    "contactWhatsapp": "WhatsApp",
+    "contactEmail": "Email",
+    "contactValue": "Your contact",
+    "contactValuePh": "Number or email to reach you",
+    "images": "Photos (up to 4)",
+    "submit": "Post ad",
+    "errors": {
+      "titleShort": "The title is too short.",
+      "titleLong": "The title is too long.",
+      "descShort": "The description is too short.",
+      "descLong": "The description is too long.",
+      "priceInvalid": "Invalid price.",
+      "categoryRequired": "Choose a category.",
+      "contactRequired": "Enter a valid contact.",
+      "imageType": "Photos must be JPG, PNG or WebP."
+    }
+  },
+  "listing": {
+    "free": "Free",
+    "featured": "Featured",
+    "contactTitle": "Seller contact",
+    "showContact": "Show contact",
+    "contactGated": "Register and verify as a student to see the seller's contact.",
+    "goRegister": "Sign up",
+    "verifiedSeller": "Verified seller",
+    "postedOn": "Posted on",
+    "backHome": "Back to home",
+    "notFound": "Listing not found."
+  },
+  "myListings": {
+    "title": "My ads",
+    "none": "You don't have any ads yet.",
+    "post": "Post an ad",
+    "boost": "Boost",
+    "boostedUntil": "Boosted until",
+    "boostPending": "Payment pending",
+    "view": "View"
+  },
+  "boost": {
+    "title": "Boost your ad",
+    "intro": "Pay to keep your ad at the top of listings and on the homepage.",
+    "days": "days",
+    "price": "Price",
+    "choose": "Choose",
+    "submit": "Continue to payment",
+    "alreadyActive": "This ad is already boosted."
+  },
+  "pay": {
+    "title": "Transfermóvil payment",
+    "amount": "Amount",
+    "purpose": "Purpose",
+    "purposeBoost": "Boost ad",
+    "purposeAd": "Advertising banner",
+    "status": "Status",
+    "statusPending": "Pending",
+    "statusConfirmed": "Confirmed",
+    "statusRejected": "Rejected",
+    "instructions": "Pay the amount via Transfermóvil to the account below. An admin will confirm your payment and activate your purchase.",
+    "scanQr": "Scan this code with Transfermóvil",
+    "openApp": "Open Transfermóvil",
+    "account": "Account / Card",
+    "notConfigured": "(account not configured yet)",
+    "referenceLabel": "Payment reference number",
+    "referencePh": "e.g. 123456789",
+    "referenceHint": "After paying, Transfermóvil gives you a transaction number. Enter it here to speed up confirmation.",
+    "submitReference": "Submit reference",
+    "referenceSaved": "Reference saved! An admin will confirm your payment soon.",
+    "refErrors": {
+      "tooShort": "The reference is too short.",
+      "notFound": "Payment not found.",
+      "notPending": "This payment is no longer pending."
+    },
+    "waiting": "Waiting for admin confirmation.",
+    "done": "Payment confirmed! Your purchase is active.",
+    "rejected": "The payment was rejected. Contact us if you think this is a mistake."
+  },
+  "adminNav": {
+    "verifications": "Verifications",
+    "payments": "Payments",
+    "reports": "Reports",
+    "ads": "Ads"
+  },
+  "report": {
+    "report": "Report ad",
+    "submit": "Report",
+    "thanks": "Thanks. An admin will review this listing.",
+    "reasons": {
+      "spam": "Spam or duplicate",
+      "prohibited": "Prohibited content",
+      "scam": "Scam / fraud",
+      "other": "Other"
+    }
+  },
+  "adminReports": {
+    "title": "Reported listings",
+    "none": "No pending reports.",
+    "reportsCount": "{count, plural, one {# report} other {# reports}}",
+    "hide": "Hide listing",
+    "unhide": "Show again",
+    "dismiss": "Dismiss",
+    "alreadyHidden": "This listing is hidden."
+  },
+  "adminPayments": {
+    "title": "Pending payments",
+    "none": "No pending payments.",
+    "amount": "Amount",
+    "user": "User",
+    "purpose": "Purpose",
+    "reference": "Reference",
+    "confirm": "Confirm",
+    "reject": "Reject"
+  },
+  "adminAds": {
+    "title": "Ads (paid banners)",
+    "create": "Create ad slot",
+    "position": "Position",
+    "image": "Image (upload)",
+    "imageUrl": "or image URL",
+    "targetUrl": "Target URL",
+    "advertiser": "Advertiser (optional)",
+    "startsAt": "Start (optional)",
+    "expiresAt": "End (optional)",
+    "submit": "Create",
+    "existing": "Existing slots",
+    "none": "No ad slots yet.",
+    "active": "Active",
+    "inactive": "Inactive",
+    "toggle": "Toggle",
+    "impressions": "Views",
+    "clicks": "Clicks"
+  },
+  "footer": {
+    "tagline": "Verified student marketplace — built for Cuba.",
+    "advertise": "Advertise here"
+  }
+}

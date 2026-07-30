@@ -1,0 +1,241 @@
+{
+  "meta": {
+    "title": "CampusMercado — Mercado estudiantil verificado",
+    "description": "Compra y vende entre estudiantes verificados. Rápido, seguro y hecho para Cuba."
+  },
+  "nav": {
+    "home": "Inicio",
+    "post": "Publicar anuncio",
+    "login": "Entrar",
+    "register": "Registrarse",
+    "myAccount": "Mi cuenta",
+    "verify": "Verificar estudiante",
+    "admin": "Admin",
+    "logout": "Salir"
+  },
+  "home": {
+    "heroTitle": "El mercado solo para estudiantes",
+    "heroSubtitle": "Compra y vende con estudiantes verificados de tu universidad. Publicar es gratis.",
+    "browseCategories": "Categorías",
+    "featured": "Anuncios destacados",
+    "recent": "Anuncios recientes",
+    "postCta": "Publicar un anuncio",
+    "noListings": "Todavía no hay anuncios. ¡Sé el primero en publicar!",
+    "verifiedBadge": "Estudiante verificado",
+    "search": "Buscar"
+  },
+  "auth": {
+    "loginTitle": "Entrar",
+    "registerTitle": "Crear cuenta de estudiante",
+    "name": "Nombre completo",
+    "email": "Correo electrónico",
+    "dob": "Fecha de nacimiento",
+    "password": "Contraseña",
+    "loginButton": "Entrar",
+    "registerButton": "Crear cuenta",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "noAccount": "¿No tienes cuenta?",
+    "goLogin": "Entrar",
+    "goRegister": "Registrarse",
+    "errors": {
+      "nameShort": "El nombre es demasiado corto.",
+      "emailInvalid": "Correo electrónico inválido.",
+      "passwordShort": "La contraseña debe tener al menos 8 caracteres.",
+      "emailTaken": "Ese correo ya está registrado.",
+      "invalidCredentials": "Correo o contraseña incorrectos.",
+      "dobRequired": "Debes indicar tu fecha de nacimiento.",
+      "dobInvalid": "Fecha de nacimiento inválida.",
+      "required": "Campo obligatorio."
+    }
+  },
+  "account": {
+    "title": "Mi cuenta",
+    "status": "Estado de verificación",
+    "statusUnverified": "Sin verificar",
+    "statusPending": "En revisión",
+    "statusApproved": "Verificado",
+    "statusRejected": "Rechazado",
+    "verifyCta": "Verificarme como estudiante",
+    "verifyPendingMsg": "Tu identificación está en revisión. Te avisaremos pronto.",
+    "verifyApprovedMsg": "¡Estás verificado! Ya puedes publicar anuncios.",
+    "postAd": "Publicar un anuncio"
+  },
+  "verify": {
+    "title": "Verificación de estudiante",
+    "intro": "Escribe el No. CI de tu carné y sube una foto clara del Carné de Identidad. Un administrador la revisará.",
+    "idLabel": "Foto del Carné de Identidad (frente completo)",
+    "cardNote": "La foto debe mostrar el frente completo del Carné de Identidad: el título del carné, el No. CI, tu foto y tus nombres. No se aceptan fotos donde solo se vea el número.",
+    "ciLabel": "No. CI (11 dígitos, escritos a mano en el carné)",
+    "ciHint": "Los primeros 6 dígitos deben coincidir con tu fecha de nacimiento (AAMMDD).",
+    "submit": "Enviar para revisión",
+    "pending": "Tu identificación ya fue enviada y está en revisión.",
+    "approved": "Ya estás verificado.",
+    "success": "¡Enviado! Tu identificación está en revisión.",
+    "errorNoFile": "Debes subir una imagen.",
+    "errorType": "El archivo debe ser una imagen (JPG o PNG).",
+    "errorNoDob": "Falta tu fecha de nacimiento. Complétala en tu registro.",
+    "errorCiFormat": "El No. CI debe tener exactamente 11 dígitos.",
+    "errorCiMismatch": "El No. CI no coincide con tu fecha de nacimiento."
+  },
+  "admin": {
+    "title": "Panel de administración",
+    "verifications": "Verificaciones pendientes",
+    "none": "No hay verificaciones pendientes.",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "user": "Usuario",
+    "submitted": "Enviado",
+    "checklistTitle": "Antes de aprobar, confirma:",
+    "confirmCard": "El Carné de Identidad se ve claramente en la foto (título del carné visible).",
+    "confirmCi": "El No. CI escrito a mano coincide con el número que el estudiante escribió."
+  },
+  "post": {
+    "title": "Publicar un anuncio",
+    "adTitle": "Título",
+    "adTitlePh": "Ej: Libro de Cálculo I, como nuevo",
+    "description": "Descripción",
+    "descriptionPh": "Describe el producto, estado, detalles...",
+    "price": "Precio",
+    "currency": "Moneda",
+    "category": "Categoría",
+    "categoryChoose": "Elige una categoría",
+    "campus": "Campus / Facultad (opcional)",
+    "campusPh": "Ej: Facultad de Ingeniería",
+    "contactMethod": "Método de contacto",
+    "contactPhone": "Teléfono",
+    "contactWhatsapp": "WhatsApp",
+    "contactEmail": "Correo",
+    "contactValue": "Tu contacto",
+    "contactValuePh": "Número o correo donde te contactan",
+    "images": "Fotos (hasta 4)",
+    "submit": "Publicar anuncio",
+    "errors": {
+      "titleShort": "El título es demasiado corto.",
+      "titleLong": "El título es demasiado largo.",
+      "descShort": "La descripción es demasiado corta.",
+      "descLong": "La descripción es demasiado larga.",
+      "priceInvalid": "Precio inválido.",
+      "categoryRequired": "Elige una categoría.",
+      "contactRequired": "Indica un contacto válido.",
+      "imageType": "Las fotos deben ser JPG, PNG o WebP."
+    }
+  },
+  "listing": {
+    "free": "Gratis",
+    "featured": "Destacado",
+    "contactTitle": "Contacto del vendedor",
+    "showContact": "Ver contacto",
+    "contactGated": "Regístrate y verifícate como estudiante para ver el contacto del vendedor.",
+    "goRegister": "Registrarme",
+    "verifiedSeller": "Vendedor verificado",
+    "postedOn": "Publicado el",
+    "backHome": "Volver al inicio",
+    "notFound": "Anuncio no encontrado."
+  },
+  "myListings": {
+    "title": "Mis anuncios",
+    "none": "Todavía no tienes anuncios.",
+    "post": "Publicar un anuncio",
+    "boost": "Destacar",
+    "boostedUntil": "Destacado hasta",
+    "boostPending": "Pago pendiente",
+    "view": "Ver"
+  },
+  "boost": {
+    "title": "Destacar tu anuncio",
+    "intro": "Paga para mantener tu anuncio arriba en las listas y en la página principal.",
+    "days": "días",
+    "price": "Precio",
+    "choose": "Elegir",
+    "submit": "Continuar al pago",
+    "alreadyActive": "Este anuncio ya está destacado."
+  },
+  "pay": {
+    "title": "Pago con Transfermóvil",
+    "amount": "Monto",
+    "purpose": "Concepto",
+    "purposeBoost": "Destacar anuncio",
+    "purposeAd": "Anuncio publicitario",
+    "status": "Estado",
+    "statusPending": "Pendiente",
+    "statusConfirmed": "Confirmado",
+    "statusRejected": "Rechazado",
+    "instructions": "Paga el monto con Transfermóvil a la cuenta indicada. Un administrador confirmará tu pago y activará tu compra.",
+    "scanQr": "Escanea este código con Transfermóvil",
+    "openApp": "Abrir Transfermóvil",
+    "account": "Cuenta / Tarjeta",
+    "notConfigured": "(cuenta aún no configurada)",
+    "referenceLabel": "Número de referencia del pago",
+    "referencePh": "Ej: 123456789",
+    "referenceHint": "Después de pagar, Transfermóvil te da un número de transacción. Escríbelo aquí para agilizar la confirmación.",
+    "submitReference": "Enviar referencia",
+    "referenceSaved": "¡Referencia guardada! Un administrador confirmará tu pago pronto.",
+    "refErrors": {
+      "tooShort": "La referencia es demasiado corta.",
+      "notFound": "Pago no encontrado.",
+      "notPending": "Este pago ya no está pendiente."
+    },
+    "waiting": "Esperando confirmación del administrador.",
+    "done": "¡Pago confirmado! Tu compra está activa.",
+    "rejected": "El pago fue rechazado. Contáctanos si crees que es un error."
+  },
+  "adminNav": {
+    "verifications": "Verificaciones",
+    "payments": "Pagos",
+    "reports": "Reportes",
+    "ads": "Publicidad"
+  },
+  "report": {
+    "report": "Reportar anuncio",
+    "submit": "Reportar",
+    "thanks": "Gracias. Un administrador revisará este anuncio.",
+    "reasons": {
+      "spam": "Spam o duplicado",
+      "prohibited": "Contenido prohibido",
+      "scam": "Estafa / fraude",
+      "other": "Otro"
+    }
+  },
+  "adminReports": {
+    "title": "Anuncios reportados",
+    "none": "No hay reportes pendientes.",
+    "reportsCount": "{count, plural, one {# reporte} other {# reportes}}",
+    "hide": "Ocultar anuncio",
+    "unhide": "Mostrar de nuevo",
+    "dismiss": "Descartar",
+    "alreadyHidden": "Este anuncio está oculto."
+  },
+  "adminPayments": {
+    "title": "Pagos pendientes",
+    "none": "No hay pagos pendientes.",
+    "amount": "Monto",
+    "user": "Usuario",
+    "purpose": "Concepto",
+    "reference": "Referencia",
+    "confirm": "Confirmar",
+    "reject": "Rechazar"
+  },
+  "adminAds": {
+    "title": "Publicidad (anuncios pagados)",
+    "create": "Crear espacio publicitario",
+    "position": "Posición",
+    "image": "Imagen (subir)",
+    "imageUrl": "o URL de imagen",
+    "targetUrl": "URL de destino",
+    "advertiser": "Anunciante (opcional)",
+    "startsAt": "Inicio (opcional)",
+    "expiresAt": "Fin (opcional)",
+    "submit": "Crear",
+    "existing": "Espacios existentes",
+    "none": "No hay espacios publicitarios.",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "toggle": "Activar/Desactivar",
+    "impressions": "Vistas",
+    "clicks": "Clics"
+  },
+  "footer": {
+    "tagline": "Mercado estudiantil verificado — hecho para Cuba.",
+    "advertise": "Anúnciate aquí"
+  }
+}

@@ -4,9 +4,10 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 // Storage abstraction so uploads work both locally (disk) and in production.
-//   STORAGE_DRIVER=local  -> writes to /public/uploads (dev, or a host with a persistent volume)
-//   STORAGE_DRIVER=s3     -> uploads to any S3-compatible bucket (Cloudflare R2, AWS S3, Backblaze B2, MinIO)
-// Serverless hosts (e.g. Vercel) have an ephemeral filesystem, so they MUST use the s3 driver.
+//   STORAGE_DRIVER=local        -> writes to /public/uploads (dev, or a host with a persistent volume)
+//   STORAGE_DRIVER=vercel-blob  -> Vercel Blob (recommended on Vercel; auto-configured via BLOB_READ_WRITE_TOKEN)
+//   STORAGE_DRIVER=s3           -> any S3-compatible bucket (Cloudflare R2, AWS S3, Backblaze B2, MinIO)
+// Serverless hosts (e.g. Vercel) have an ephemeral filesystem, so they MUST use vercel-blob or s3.
 
 const DRIVER = process.env.STORAGE_DRIVER || "local";
 
@@ -38,9 +39,24 @@ export async function saveImageBytes(
   folder: UploadFolder,
 ): Promise<string> {
   const key = `${folder}/${randomUUID()}.${extFor(contentType)}`;
-  return DRIVER === "s3"
-    ? saveToS3(key, bytes, contentType)
-    : saveToLocal(key, bytes);
+  if (DRIVER === "vercel-blob") return saveToVercelBlob(key, bytes, contentType);
+  if (DRIVER === "s3") return saveToS3(key, bytes, contentType);
+  return saveToLocal(key, bytes);
+}
+
+async function saveToVercelBlob(
+  key: string,
+  bytes: Buffer,
+  contentType: string,
+): Promise<string> {
+  const { put } = await import("@vercel/blob");
+  const { url } = await put(key, bytes, {
+    access: "public",
+    contentType,
+    addRandomSuffix: false,
+    token: process.env.BLOB_READ_WRITE_TOKEN,
+  });
+  return url;
 }
 
 async function saveToLocal(key: string, bytes: Buffer): Promise<string> {

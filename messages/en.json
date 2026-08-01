@@ -62,20 +62,23 @@
   },
   "verify": {
     "title": "Student verification",
-    "intro": "Type the No. CI from your card and upload a clear photo of the Carné de Identidad. An admin will review it.",
+    "intro": "Type the No. CI from your card and upload a photo of the front of your Carné de Identidad. Verification is automatic and instant.",
     "idLabel": "Carné de Identidad photo (full front)",
     "cardNote": "The photo must show the full front of the Carné de Identidad: the card title, the No. CI, your photo and your names. Photos showing only the number are not accepted.",
-    "ciLabel": "No. CI (11 digits, handwritten on the card)",
+    "ciLabel": "No. CI (11 digits, on your card)",
     "ciHint": "The first 6 digits must match your date of birth (YYMMDD).",
-    "submit": "Submit for review",
+    "submit": "Verify now",
+    "checking": "Verifying…",
     "pending": "Your ID has already been submitted and is under review.",
     "approved": "You're already verified.",
-    "success": "Submitted! Your ID is under review.",
     "errorNoFile": "You must upload an image.",
     "errorType": "The file must be an image (JPG or PNG).",
     "errorNoDob": "Your date of birth is missing. Please add it in your registration.",
     "errorCiFormat": "The No. CI must be exactly 11 digits.",
-    "errorCiMismatch": "The No. CI does not match your date of birth."
+    "results": {
+      "approved": "Verified! You can now post ads.",
+      "ciMismatch": "The No. CI doesn't match your date of birth. Check the number or your date of birth."
+    }
   },
   "admin": {
     "title": "Admin panel",
@@ -123,6 +126,7 @@
   "listing": {
     "free": "Free",
     "featured": "Featured",
+    "soldBadge": "SOLD",
     "contactTitle": "Seller contact",
     "showContact": "Show contact",
     "contactGated": "Register and verify as a student to see the seller's contact.",
@@ -139,7 +143,13 @@
     "boost": "Boost",
     "boostedUntil": "Boosted until",
     "boostPending": "Payment pending",
-    "view": "View"
+    "view": "View",
+    "markSold": "Mark sold",
+    "reactivate": "Reactivate",
+    "delete": "Delete",
+    "confirmDelete": "Yes, delete",
+    "sold": "Sold",
+    "hidden": "Hidden"
   },
   "boost": {
     "title": "Boost your ad",

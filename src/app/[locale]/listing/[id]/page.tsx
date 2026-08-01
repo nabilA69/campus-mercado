@@ -79,6 +79,11 @@ export default async function ListingPage({
           <span className="inline-block text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
             {categoryName}
           </span>
+          {listing.status === "sold" && (
+            <span className="ml-2 inline-block text-xs font-bold bg-gray-700 text-white px-2 py-1 rounded">
+              {t("soldBadge")}
+            </span>
+          )}
           <h1 className="mt-2 text-2xl font-bold">{listing.title}</h1>
           <p className="mt-1 text-2xl font-extrabold text-brand">
             {formatPrice(listing.priceAmount, listing.currency, t("free"))}

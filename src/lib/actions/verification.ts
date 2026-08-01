@@ -4,11 +4,18 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { isValidCiFormat, ciMatchesDob } from "@/lib/ci";
 import { saveImage, isAllowedImage } from "@/lib/storage";
+import { isValidCiFormat, ciMatchesDob } from "@/lib/ci";
 
-export type VerifyState = { error?: string; success?: boolean };
+export type VerifyState = {
+  error?: string;
+  success?: boolean;
+  reason?: string; // "ci_mismatch" when the No. CI doesn't match the DOB
+};
 
+// Instant, deterministic verification (no AI, no admin): the student types the
+// No. CI from their Carné; if its first 6 digits (YYMMDD) match their date of
+// birth, they're verified immediately. The photo is stored as a record.
 export async function submitVerificationAction(
   _prev: VerifyState,
   formData: FormData,
@@ -20,19 +27,17 @@ export async function submitVerificationAction(
   if (user.verificationStatus === "approved") {
     return { error: "already" };
   }
-
-  // Date of birth must exist (set at registration) to check the CI number.
   if (!user.dateOfBirth) return { error: "errorNoDob" };
 
-  // Validate the typed No. CI and match its first 6 digits (YYMMDD) to the DOB.
-  const ciNumber = ((formData.get("ciNumber") as string) || "").replace(/\s/g, "");
+  const ciNumber = ((formData.get("ciNumber") as string) || "").replace(/\D/g, "");
   if (!isValidCiFormat(ciNumber)) return { error: "errorCiFormat" };
-  if (!ciMatchesDob(ciNumber, user.dateOfBirth)) return { error: "errorCiMismatch" };
 
   const file = formData.get("idCard") as File | null;
   if (!file || file.size === 0) return { error: "errorNoFile" };
   if (!isAllowedImage(file.type)) return { error: "errorType" };
 
+  const matches = ciMatchesDob(ciNumber, user.dateOfBirth);
+  const status = matches ? "approved" : "rejected";
   const url = await saveImage(file, "ids");
 
   await prisma.studentVerification.upsert({
@@ -40,24 +45,25 @@ export async function submitVerificationAction(
     update: {
       idCardImageUrl: url,
       ciNumber,
-      ciAutoMatch: true,
-      status: "pending",
-      reviewNotes: null,
+      ciAutoMatch: matches,
+      status,
+      reviewNotes: matches ? "auto-approved (CI↔DOB match)" : "ci_mismatch",
     },
     create: {
       userId: user.id,
       idCardImageUrl: url,
       ciNumber,
-      ciAutoMatch: true,
-      status: "pending",
+      ciAutoMatch: matches,
+      status,
+      reviewNotes: matches ? "auto-approved (CI↔DOB match)" : "ci_mismatch",
     },
   });
   await prisma.user.update({
     where: { id: user.id },
-    data: { verificationStatus: "pending" },
+    data: { verificationStatus: status },
   });
 
-  return { success: true };
+  return matches ? { success: true } : { reason: "ci_mismatch" };
 }
 
 /** Admin-only: approve or reject a pending student verification. */

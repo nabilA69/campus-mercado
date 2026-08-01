@@ -4,6 +4,10 @@ import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
+import {
+  setListingStatusAction,
+  deleteListingAction,
+} from "@/lib/actions/listings";
 
 export default async function MyListingsPage({
   params,
@@ -72,7 +76,19 @@ export default async function MyListingsPage({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium truncate">{l.title}</p>
+                  <p className="font-medium truncate">
+                    {l.title}
+                    {l.status === "sold" && (
+                      <span className="ml-2 align-middle text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded">
+                        {t("sold")}
+                      </span>
+                    )}
+                    {l.status === "hidden" && (
+                      <span className="ml-2 align-middle text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded">
+                        {t("hidden")}
+                      </span>
+                    )}
+                  </p>
                   <p className="text-sm text-brand font-semibold">
                     {formatPrice(l.priceAmount, l.currency, tl("free"))}
                   </p>
@@ -86,14 +102,30 @@ export default async function MyListingsPage({
                     <p className="text-xs text-gray-400">{t("boostPending")}</p>
                   )}
                 </div>
-                <div className="flex flex-col gap-1 shrink-0">
-                  <Link
-                    href={`/listing/${l.id}`}
-                    className="text-xs text-gray-500 hover:text-brand text-right"
-                  >
-                    {t("view")}
-                  </Link>
-                  {!activeBoost && (
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/listing/${l.id}`}
+                      className="text-xs text-gray-500 hover:text-brand"
+                    >
+                      {t("view")}
+                    </Link>
+                    {/* Mark sold / reactivate */}
+                    <form action={setListingStatusAction}>
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="listingId" value={l.id} />
+                      <input
+                        type="hidden"
+                        name="status"
+                        value={l.status === "sold" ? "active" : "sold"}
+                      />
+                      <button className="text-xs text-gray-500 hover:text-brand">
+                        {l.status === "sold" ? t("reactivate") : t("markSold")}
+                      </button>
+                    </form>
+                  </div>
+
+                  {!activeBoost && l.status === "active" && (
                     <Link
                       href={`/listing/${l.id}/boost`}
                       className="rounded-md bg-amber-400 text-amber-900 px-3 py-1.5 text-xs font-bold hover:bg-amber-500"
@@ -101,6 +133,20 @@ export default async function MyListingsPage({
                       ★ {t("boost")}
                     </Link>
                   )}
+
+                  {/* Delete (guarded behind a reveal to avoid accidents) */}
+                  <details className="text-right">
+                    <summary className="cursor-pointer text-xs text-gray-400 hover:text-red-600 select-none">
+                      {t("delete")}
+                    </summary>
+                    <form action={deleteListingAction} className="mt-1">
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="listingId" value={l.id} />
+                      <button className="rounded-md bg-red-600 px-2 py-1 text-white text-xs font-medium hover:bg-red-700">
+                        {t("confirmDelete")}
+                      </button>
+                    </form>
+                  </details>
                 </div>
               </li>
             );

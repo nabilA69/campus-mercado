@@ -62,20 +62,23 @@
   },
   "verify": {
     "title": "Verificación de estudiante",
-    "intro": "Escribe el No. CI de tu carné y sube una foto clara del Carné de Identidad. Un administrador la revisará.",
+    "intro": "Escribe el No. CI de tu carné y sube una foto del frente del Carné de Identidad. La verificación es automática e instantánea.",
     "idLabel": "Foto del Carné de Identidad (frente completo)",
     "cardNote": "La foto debe mostrar el frente completo del Carné de Identidad: el título del carné, el No. CI, tu foto y tus nombres. No se aceptan fotos donde solo se vea el número.",
-    "ciLabel": "No. CI (11 dígitos, escritos a mano en el carné)",
+    "ciLabel": "No. CI (11 dígitos, en tu carné)",
     "ciHint": "Los primeros 6 dígitos deben coincidir con tu fecha de nacimiento (AAMMDD).",
-    "submit": "Enviar para revisión",
+    "submit": "Verificar ahora",
+    "checking": "Verificando…",
     "pending": "Tu identificación ya fue enviada y está en revisión.",
     "approved": "Ya estás verificado.",
-    "success": "¡Enviado! Tu identificación está en revisión.",
     "errorNoFile": "Debes subir una imagen.",
     "errorType": "El archivo debe ser una imagen (JPG o PNG).",
     "errorNoDob": "Falta tu fecha de nacimiento. Complétala en tu registro.",
     "errorCiFormat": "El No. CI debe tener exactamente 11 dígitos.",
-    "errorCiMismatch": "El No. CI no coincide con tu fecha de nacimiento."
+    "results": {
+      "approved": "¡Verificado! Ya puedes publicar anuncios.",
+      "ciMismatch": "El No. CI no coincide con tu fecha de nacimiento. Revisa el número o tu fecha de nacimiento."
+    }
   },
   "admin": {
     "title": "Panel de administración",
@@ -123,6 +126,7 @@
   "listing": {
     "free": "Gratis",
     "featured": "Destacado",
+    "soldBadge": "VENDIDO",
     "contactTitle": "Contacto del vendedor",
     "showContact": "Ver contacto",
     "contactGated": "Regístrate y verifícate como estudiante para ver el contacto del vendedor.",
@@ -139,7 +143,13 @@
     "boost": "Destacar",
     "boostedUntil": "Destacado hasta",
     "boostPending": "Pago pendiente",
-    "view": "Ver"
+    "view": "Ver",
+    "markSold": "Marcar vendido",
+    "reactivate": "Reactivar",
+    "delete": "Eliminar",
+    "confirmDelete": "Sí, eliminar",
+    "sold": "Vendido",
+    "hidden": "Oculto"
   },
   "boost": {
     "title": "Destacar tu anuncio",

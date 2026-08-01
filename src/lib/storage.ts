@@ -27,10 +27,19 @@ export async function saveImage(
   file: File,
   folder: UploadFolder,
 ): Promise<string> {
-  const key = `${folder}/${randomUUID()}.${extFor(file.type)}`;
   const bytes = Buffer.from(await file.arrayBuffer());
+  return saveImageBytes(bytes, file.type, folder);
+}
+
+/** Save raw image bytes (when you've already read the file) and return the URL. */
+export async function saveImageBytes(
+  bytes: Buffer,
+  contentType: string,
+  folder: UploadFolder,
+): Promise<string> {
+  const key = `${folder}/${randomUUID()}.${extFor(contentType)}`;
   return DRIVER === "s3"
-    ? saveToS3(key, bytes, file.type)
+    ? saveToS3(key, bytes, contentType)
     : saveToLocal(key, bytes);
 }
 

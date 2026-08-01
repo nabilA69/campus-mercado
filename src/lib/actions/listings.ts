@@ -79,3 +79,37 @@ export async function createListingAction(
 
   redirect(`/${locale}/listing/${listing.id}`);
 }
+
+/** Owner marks their listing as sold or active again. */
+export async function setListingStatusAction(formData: FormData) {
+  const locale = (formData.get("locale") as string) || "es";
+  const listingId = formData.get("listingId") as string;
+  const status = formData.get("status") as string; // sold | active
+
+  const user = await getCurrentUser();
+  if (!user) redirect(`/${locale}/login`);
+  if (status !== "sold" && status !== "active") {
+    redirect(`/${locale}/account/listings`);
+  }
+
+  const listing = await prisma.listing.findUnique({ where: { id: listingId } });
+  if (listing && listing.sellerId === user!.id) {
+    await prisma.listing.update({ where: { id: listingId }, data: { status } });
+  }
+  redirect(`/${locale}/account/listings`);
+}
+
+/** Owner deletes their own listing (cascades images, boosts, reports). */
+export async function deleteListingAction(formData: FormData) {
+  const locale = (formData.get("locale") as string) || "es";
+  const listingId = formData.get("listingId") as string;
+
+  const user = await getCurrentUser();
+  if (!user) redirect(`/${locale}/login`);
+
+  const listing = await prisma.listing.findUnique({ where: { id: listingId } });
+  if (listing && listing.sellerId === user!.id) {
+    await prisma.listing.delete({ where: { id: listingId } });
+  }
+  redirect(`/${locale}/account/listings`);
+}

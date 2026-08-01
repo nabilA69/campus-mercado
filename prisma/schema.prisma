@@ -7,9 +7,8 @@ generator client {
 }
 
 datasource db {
-  // LOCAL DEV: sqlite. PRODUCTION: change to "postgresql" (the schema is portable),
-  // set DATABASE_URL to your Postgres connection string, then run `npm run db:push`.
-  provider = "sqlite"
+  // PostgreSQL (production, e.g. Neon). DATABASE_URL is the connection string.
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

@@ -29,12 +29,13 @@ body {
   overflow-x: hidden;
 }
 
-/* Media should never exceed its container on small screens. */
+/* Media should never exceed its container on small screens.
+   NOTE: deliberately no `height: auto` here — this rule is unlayered, so it would
+   beat Tailwind's layered height utilities (h-9 etc.) and blow up sized images. */
 img,
 svg,
 video {
   max-width: 100%;
-  height: auto;
 }
 
 /* ── Intro splash: the logo drops in and dangles on its string ───────────── */

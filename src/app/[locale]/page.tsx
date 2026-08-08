@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { CATEGORY_SEED } from "@/lib/categories";
 import ListingCard from "@/components/ListingCard";
-import ListingCarousel from "@/components/ListingCarousel";
+import Recommended3D from "@/components/Recommended3D";
 import AdBanner from "@/components/AdBanner";
 import { fetchListingsFeaturedFirst } from "@/lib/listings-query";
 
@@ -19,6 +19,7 @@ export default async function HomePage({
   await connection();
   setRequestLocale(locale);
   const t = await getTranslations("home");
+  const tl = await getTranslations("listing");
 
   const categories = await prisma.category.findMany({
     orderBy: { sortOrder: "asc" },
@@ -67,8 +68,13 @@ export default async function HomePage({
         <AdBanner position="home_top" />
       </div>
 
-      {/* Personalized recommendations (based on what you browse) */}
-      <ListingCarousel title={t("recommended")} cards={recommended} />
+      {/* Personalized recommendations — dramatic 3D slideshow, auto-advancing */}
+      <Recommended3D
+        title={t("recommended")}
+        cards={recommended}
+        freeLabel={tl("free")}
+        featuredLabel={tl("featured")}
+      />
 
       {/* Categories */}
       <section className="mb-10">

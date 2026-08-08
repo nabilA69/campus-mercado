@@ -44,12 +44,15 @@ export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
   );
 }
 
-/** Full lockup: mark + wordmark. The wordmark truncates gracefully on tiny screens. */
+/**
+ * Full lockup: mark + wordmark. On very narrow phones (< 400px) the wordmark is
+ * hidden so the mark alone represents the brand — cleaner than a truncated word.
+ */
 export default function Logo() {
   return (
     <span className="flex items-center gap-2 min-w-0">
       <LogoMark className="h-8 w-8 shrink-0" />
-      <span className="font-extrabold text-lg text-brand truncate">
+      <span className="hidden min-[400px]:inline font-extrabold text-lg text-brand whitespace-nowrap">
         Campus<span className="text-foreground">Mercado</span>
       </span>
     </span>

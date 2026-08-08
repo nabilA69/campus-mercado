@@ -1,6 +1,9 @@
-// CampusMercado logo: a graduation cap sitting on a shopping bag — "students + marketplace".
-// Inline SVG so it costs zero extra requests and stays crisp on every screen (good for
-// low-bandwidth connections in Cuba).
+/**
+ * CampusMercado identity — a geometric "CM" monogram built from the brand name itself.
+ * The C is an open ring that cradles the M, suggesting a campus community enclosing
+ * its marketplace. Drawn as pure vector paths (no font dependency), inline so it
+ * costs zero extra requests — important on slow Cuban connections.
+ */
 export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
   return (
     <svg
@@ -10,49 +13,38 @@ export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
       aria-label="CampusMercado"
     >
       <rect width="40" height="40" rx="11" fill="var(--brand, #0d7d5a)" />
-      {/* shopping bag */}
+      {/* C — open ring */}
       <path
-        d="M12 19h16l-1.5 11.5a2 2 0 0 1-2 1.7H15.5a2 2 0 0 1-2-1.7L12 19Z"
-        fill="#fff"
-        fillOpacity="0.95"
-      />
-      {/* bag handle */}
-      <path
-        d="M16.6 19v-1.4a3.4 3.4 0 0 1 6.8 0V19"
+        d="M20.5 12.2A9 9 0 1 0 20.5 27.8"
         fill="none"
         stroke="#fff"
-        strokeWidth="1.7"
+        strokeWidth="4.2"
         strokeLinecap="round"
-        opacity="0.9"
       />
-      {/* graduation cap */}
-      <path d="M20 6.5 30.5 11 20 15.5 9.5 11 20 6.5Z" fill="#fff" />
+      {/* M — nested in the C's opening */}
       <path
-        d="M25.8 13.1v3.3c0 1.2-2.6 2.2-5.8 2.2s-5.8-1-5.8-2.2v-3.3"
+        d="M23 27.5V14l5 7 5-7v13.5"
         fill="none"
         stroke="#fff"
-        strokeWidth="1.6"
+        strokeWidth="3.8"
+        strokeLinecap="round"
         strokeLinejoin="round"
-      />
-      <path
-        d="M30.5 11v4.6"
-        stroke="#fff"
-        strokeWidth="1.5"
-        strokeLinecap="round"
       />
     </svg>
   );
 }
 
 /**
- * Full lockup: mark + wordmark. On very narrow phones (< 400px) the wordmark is
- * hidden so the mark alone represents the brand — cleaner than a truncated word.
+ * Logo lockup. The wordmark appears when there's room for it:
+ *  - phone in portrait  -> monogram only ("CM")
+ *  - phone in landscape -> monogram + "CampusMercado"
+ *  - tablets / desktop  -> monogram + "CampusMercado"
  */
 export default function Logo() {
   return (
     <span className="flex items-center gap-2 min-w-0">
       <LogoMark className="h-8 w-8 shrink-0" />
-      <span className="hidden min-[400px]:inline font-extrabold text-lg text-brand whitespace-nowrap">
+      <span className="hidden landscape:inline sm:inline font-extrabold text-lg text-brand whitespace-nowrap">
         Campus<span className="text-foreground">Mercado</span>
       </span>
     </span>

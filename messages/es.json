@@ -23,6 +23,7 @@
     "noListings": "Todavía no hay anuncios. ¡Sé el primero en publicar!",
     "verifiedBadge": "Estudiante verificado",
     "search": "Buscar",
+    "searchPlaceholder": "¿Qué estás buscando?",
     "recommended": "Recomendado para ti"
   },
   "auth": {

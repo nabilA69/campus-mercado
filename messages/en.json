@@ -23,6 +23,7 @@
     "noListings": "No ads yet. Be the first to post!",
     "verifiedBadge": "Verified student",
     "search": "Search",
+    "searchPlaceholder": "What are you looking for?",
     "recommended": "Recommended for you"
   },
   "auth": {

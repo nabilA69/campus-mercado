@@ -18,10 +18,11 @@ export default async function Header() {
           <Logo />
         </Link>
 
-        <nav className="flex items-center gap-2 sm:gap-4 text-sm shrink-0">
+        {/* h-10 on every control = comfortable ~40px thumb targets on phones */}
+        <nav className="flex items-center gap-1 sm:gap-3 text-sm shrink-0">
           <Link
             href="/post"
-            className="hidden sm:inline text-gray-600 hover:text-brand"
+            className="hidden sm:inline-flex items-center h-10 px-2 text-gray-600 hover:text-brand"
           >
             {t("post")}
           </Link>
@@ -31,20 +32,20 @@ export default async function Header() {
               {user.role === "admin" && (
                 <Link
                   href="/admin"
-                  className="hidden sm:inline text-gray-600 hover:text-brand"
+                  className="hidden sm:inline-flex items-center h-10 px-2 text-gray-600 hover:text-brand"
                 >
                   {t("admin")}
                 </Link>
               )}
               <Link
                 href="/account"
-                className="text-gray-600 hover:text-brand whitespace-nowrap"
+                className="inline-flex items-center h-10 px-2 text-gray-600 hover:text-brand whitespace-nowrap"
               >
                 {t("myAccount")}
               </Link>
               <form action={logoutAction} className="shrink-0">
                 <input type="hidden" name="locale" value={locale} />
-                <button className="text-gray-600 hover:text-brand">
+                <button className="inline-flex items-center h-10 px-2 text-gray-600 hover:text-brand">
                   {t("logout")}
                 </button>
               </form>
@@ -53,13 +54,13 @@ export default async function Header() {
             <>
               <Link
                 href="/login"
-                className="text-gray-600 hover:text-brand whitespace-nowrap"
+                className="inline-flex items-center h-10 px-2 text-gray-600 hover:text-brand whitespace-nowrap"
               >
                 {t("login")}
               </Link>
               <Link
                 href="/register"
-                className="rounded-md bg-brand px-2.5 sm:px-3 py-1.5 text-white font-medium hover:bg-brand-dark whitespace-nowrap"
+                className="inline-flex items-center h-10 rounded-md bg-brand px-3 text-white font-medium hover:bg-brand-dark whitespace-nowrap"
               >
                 {t("register")}
               </Link>

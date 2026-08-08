@@ -58,7 +58,7 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
         <button
           type="submit"
           disabled={pending}
-          className="w-full rounded-md bg-brand px-4 py-2 text-white font-semibold hover:bg-brand-dark disabled:opacity-50"
+          className="w-full rounded-md bg-brand px-4 py-3 text-white font-semibold hover:bg-brand-dark disabled:opacity-50"
         >
           {mode === "register" ? t("registerButton") : t("loginButton")}
         </button>
@@ -98,7 +98,7 @@ function Field({
         type={type}
         autoComplete={autoComplete}
         required
-        className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+        className="w-full rounded-md border border-gray-300 px-3 py-2.5 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
       />
     </label>
   );

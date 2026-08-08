@@ -49,11 +49,12 @@ export default async function CategoryPage({
       <form className="mb-6 flex gap-2" action="" method="get">
         <input
           name="q"
+          type="search"
           defaultValue={query}
-          placeholder="🔍"
-          className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          placeholder={t("searchPlaceholder")}
+          className="min-w-0 flex-1 rounded-md border border-gray-300 px-3 h-11 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
         />
-        <button className="rounded-md bg-brand px-4 py-2 text-white font-medium hover:bg-brand-dark">
+        <button className="shrink-0 rounded-md bg-brand px-4 h-11 text-white font-medium hover:bg-brand-dark">
           {t("search")}
         </button>
       </form>

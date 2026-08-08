@@ -1,10 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f8fa;
-  --foreground: #171717;
-  --brand: #0d7d5a;
-  --brand-dark: #0a6349;
+  --background: #f6f8fa;
+  --foreground: #14213d;
+  /* Brand palette taken from the logo: navy (trust / campus) + green (market / action) */
+  --navy: #13315f;
+  --navy-dark: #0d2547;
+  --brand: #6cb023; /* primary action green */
+  --brand-dark: #5a9a1b;
 }
 
 @theme inline {
@@ -12,6 +15,8 @@
   --color-foreground: var(--foreground);
   --color-brand: var(--brand);
   --color-brand-dark: var(--brand-dark);
+  --color-navy: var(--navy);
+  --color-navy-dark: var(--navy-dark);
   /* System font stack — zero font download, best for low-bandwidth (Cuba). */
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }

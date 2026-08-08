@@ -50,11 +50,14 @@ async function saveToVercelBlob(
   contentType: string,
 ): Promise<string> {
   const { put } = await import("@vercel/blob");
+  // Only pass `token` if it's explicitly set; otherwise let the SDK resolve
+  // credentials itself (on Vercel a connected Blob store is auto-authenticated).
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
   const { url } = await put(key, bytes, {
     access: "public",
     contentType,
     addRandomSuffix: false,
-    token: process.env.BLOB_READ_WRITE_TOKEN,
+    ...(token ? { token } : {}),
   });
   return url;
 }

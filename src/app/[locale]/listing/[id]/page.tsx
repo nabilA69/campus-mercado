@@ -4,8 +4,10 @@ import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
-
+import { fetchListingsFeaturedFirst } from "@/lib/listings-query";
 import ReportButton from "@/components/ReportButton";
+import ListingCarousel from "@/components/ListingCarousel";
+import InterestTracker from "@/components/InterestTracker";
 
 export default async function ListingPage({
   params,
@@ -41,6 +43,12 @@ export default async function ListingPage({
   const tb = await getTranslations("myListings");
   const categoryName =
     locale === "es" ? listing.category.nameEs : listing.category.nameEn;
+
+  // Similar products: other active listings in the same category.
+  const similar = await fetchListingsFeaturedFirst(
+    { categoryId: listing.categoryId, status: "active", id: { not: listing.id } },
+    12,
+  );
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
@@ -148,6 +156,12 @@ export default async function ListingPage({
           {/* Report / flag this listing */}
           {!isOwner && <ReportButton listingId={listing.id} locale={locale} />}
         </div>
+      </div>
+
+      {/* Record interest (for homepage recs) + show similar products */}
+      <InterestTracker slug={listing.category.slug} />
+      <div className="mt-10">
+        <ListingCarousel title={t("similar")} cards={similar} />
       </div>
     </div>
   );

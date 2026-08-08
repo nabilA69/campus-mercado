@@ -1,9 +1,11 @@
 import { connection } from "next/server";
+import { cookies } from "next/headers";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { CATEGORY_SEED } from "@/lib/categories";
 import ListingCard from "@/components/ListingCard";
+import ListingCarousel from "@/components/ListingCarousel";
 import AdBanner from "@/components/AdBanner";
 import { fetchListingsFeaturedFirst } from "@/lib/listings-query";
 
@@ -27,6 +29,21 @@ export default async function HomePage({
   // Recent active listings (boosted ones surface first, then newest).
   const cards = await fetchListingsFeaturedFirst({ status: "active" }, 12);
 
+  // Personalized recommendations from the categories this visitor browses most
+  // (stored in the cm_interests cookie by InterestTracker on listing pages).
+  const store = await cookies();
+  const interestSlugs = (store.get("cm_interests")?.value ?? "")
+    .split(",")
+    .map((s) => decodeURIComponent(s))
+    .filter(Boolean);
+  const recommended =
+    interestSlugs.length > 0
+      ? await fetchListingsFeaturedFirst(
+          { status: "active", category: { slug: { in: interestSlugs } } },
+          12,
+        )
+      : [];
+
   return (
     <div className="mx-auto max-w-5xl px-4">
       {/* Hero */}
@@ -49,6 +66,9 @@ export default async function HomePage({
       <div className="mb-8">
         <AdBanner position="home_top" />
       </div>
+
+      {/* Personalized recommendations (based on what you browse) */}
+      <ListingCarousel title={t("recommended")} cards={recommended} />
 
       {/* Categories */}
       <section className="mb-10">

@@ -22,7 +22,8 @@
     "postCta": "Publicar un anuncio",
     "noListings": "Todavía no hay anuncios. ¡Sé el primero en publicar!",
     "verifiedBadge": "Estudiante verificado",
-    "search": "Buscar"
+    "search": "Buscar",
+    "recommended": "Recomendado para ti"
   },
   "auth": {
     "loginTitle": "Entrar",
@@ -127,6 +128,7 @@
     "free": "Gratis",
     "featured": "Destacado",
     "soldBadge": "VENDIDO",
+    "similar": "Productos similares",
     "contactTitle": "Contacto del vendedor",
     "showContact": "Ver contacto",
     "contactGated": "Regístrate y verifícate como estudiante para ver el contacto del vendedor.",

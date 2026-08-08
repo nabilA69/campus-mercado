@@ -22,7 +22,8 @@
     "postCta": "Post an ad",
     "noListings": "No ads yet. Be the first to post!",
     "verifiedBadge": "Verified student",
-    "search": "Search"
+    "search": "Search",
+    "recommended": "Recommended for you"
   },
   "auth": {
     "loginTitle": "Log in",
@@ -127,6 +128,7 @@
     "free": "Free",
     "featured": "Featured",
     "soldBadge": "SOLD",
+    "similar": "Similar products",
     "contactTitle": "Seller contact",
     "showContact": "Show contact",
     "contactGated": "Register and verify as a student to see the seller's contact.",

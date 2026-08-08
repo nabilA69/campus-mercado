@@ -20,4 +20,14 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  /* Safety net: never let a stray wide element cause sideways scrolling on phones. */
+  overflow-x: hidden;
+}
+
+/* Media should never exceed its container on small screens. */
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
 }

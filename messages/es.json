@@ -247,6 +247,9 @@
     "impressions": "Vistas",
     "clicks": "Clics"
   },
+  "splash": {
+    "loading": "Cargando..."
+  },
   "footer": {
     "tagline": "El mercado seguro para estudiantes verificados en Cuba.",
     "advertise": "Anúnciate aquí"

@@ -37,6 +37,15 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className="h-full antialiased">
+      <head>
+        {/* Runs before paint: if the splash was already shown this session, hide it
+            via CSS immediately so repeat navigations don't flash it. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem('cm_splash_seen')==='1'){document.documentElement.dataset.splash='seen'}}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider>
           <SplashScreen />

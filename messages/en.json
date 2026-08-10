@@ -247,6 +247,9 @@
     "impressions": "Views",
     "clicks": "Clicks"
   },
+  "splash": {
+    "loading": "Loading..."
+  },
   "footer": {
     "tagline": "The safe marketplace for verified students in Cuba.",
     "advertise": "Advertise here"

@@ -108,8 +108,19 @@ export default function VerifyForm() {
         />
       </label>
 
-      {state.reason === "ci_mismatch" && (
-        <p className="text-sm text-red-600">{t("results.ciMismatch")}</p>
+      {state.reason && state.reason !== "approved" && (
+        <p className="text-sm text-red-600">
+          {t(
+            `results.${
+              {
+                ci_mismatch: "ciMismatch",
+                not_carne: "notCarne",
+                unreadable: "unreadable",
+                typed_mismatch: "typedMismatch",
+              }[state.reason] ?? "ciMismatch"
+            }`,
+          )}
+        </p>
       )}
       {state.error && (
         <p className="text-sm text-red-600">

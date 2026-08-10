@@ -79,7 +79,10 @@
     "errorCiFormat": "El No. CI debe tener exactamente 11 dígitos.",
     "results": {
       "approved": "¡Verificado! Ya puedes publicar anuncios.",
-      "ciMismatch": "El No. CI no coincide con tu fecha de nacimiento. Revisa el número o tu fecha de nacimiento."
+      "ciMismatch": "El No. CI no coincide con tu fecha de nacimiento. Revisa el número o tu fecha de nacimiento.",
+      "notCarne": "No reconocimos un Carné de Identidad en la foto. Sube una foto clara del frente completo del carné.",
+      "unreadable": "No pudimos leer el No. CI con claridad. Toma la foto con buena luz, enfocada y sin reflejos, e inténtalo de nuevo.",
+      "typedMismatch": "El número que escribiste no coincide con el del carné en la foto."
     }
   },
   "admin": {

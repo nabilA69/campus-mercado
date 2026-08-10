@@ -4,8 +4,9 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { saveImage, isAllowedImage } from "@/lib/storage";
+import { saveImageBytes, isAllowedImage } from "@/lib/storage";
 import { isValidCiFormat, ciMatchesDob } from "@/lib/ci";
+import { verifyCarneImage, aiVisionConfigured } from "@/lib/verify-ci-ai";
 
 export type VerifyState = {
   error?: string;
@@ -29,41 +30,76 @@ export async function submitVerificationAction(
   }
   if (!user.dateOfBirth) return { error: "errorNoDob" };
 
-  const ciNumber = ((formData.get("ciNumber") as string) || "").replace(/\D/g, "");
-  if (!isValidCiFormat(ciNumber)) return { error: "errorCiFormat" };
+  const typedCi = ((formData.get("ciNumber") as string) || "").replace(/\D/g, "");
+  const useAi = aiVisionConfigured();
+
+  // Without AI the typed No. CI is the only signal, so it stays required.
+  if (!useAi && !isValidCiFormat(typedCi)) return { error: "errorCiFormat" };
+  // With AI a typed number is optional, but if given it must be well-formed.
+  if (useAi && typedCi && !isValidCiFormat(typedCi)) {
+    return { error: "errorCiFormat" };
+  }
 
   const file = formData.get("idCard") as File | null;
   if (!file || file.size === 0) return { error: "errorNoFile" };
   if (!isAllowedImage(file.type)) return { error: "errorType" };
 
-  const matches = ciMatchesDob(ciNumber, user.dateOfBirth);
-  const status = matches ? "approved" : "rejected";
-  const url = await saveImage(file, "ids");
+  const bytes = Buffer.from(await file.arrayBuffer());
+  const url = await saveImageBytes(bytes, file.type, "ids");
+
+  let approved: boolean;
+  let ciNumber: string | null;
+  let reason: string;
+  let note: string | undefined;
+
+  if (useAi) {
+    const decision = await verifyCarneImage({
+      base64: bytes.toString("base64"),
+      mediaType: file.type,
+      dob: user.dateOfBirth,
+      typedCi,
+    });
+    note = decision.detail;
+
+    if (decision.reason === "ai_error" || decision.reason === "not_configured") {
+      // Provider hiccup: fall back to the deterministic typed-CI check so a
+      // student is never blocked by our infrastructure.
+      approved = isValidCiFormat(typedCi) && ciMatchesDob(typedCi, user.dateOfBirth);
+      ciNumber = typedCi || null;
+      reason = approved ? "approved" : "ci_mismatch";
+      note = `ai_unavailable(${decision.detail ?? ""}) -> fallback`;
+    } else {
+      approved = decision.approved;
+      ciNumber = decision.ciNumber ?? (typedCi || null);
+      reason = decision.reason;
+    }
+  } else {
+    approved = ciMatchesDob(typedCi, user.dateOfBirth);
+    ciNumber = typedCi;
+    reason = approved ? "approved" : "ci_mismatch";
+  }
+
+  const status = approved ? "approved" : "rejected";
+  const record = {
+    idCardImageUrl: url,
+    ciNumber,
+    ciAutoMatch: approved,
+    status,
+    reviewNotes: reason,
+    ocrResult: note ? JSON.stringify({ reason, note }) : null,
+  };
 
   await prisma.studentVerification.upsert({
     where: { userId: user.id },
-    update: {
-      idCardImageUrl: url,
-      ciNumber,
-      ciAutoMatch: matches,
-      status,
-      reviewNotes: matches ? "auto-approved (CI↔DOB match)" : "ci_mismatch",
-    },
-    create: {
-      userId: user.id,
-      idCardImageUrl: url,
-      ciNumber,
-      ciAutoMatch: matches,
-      status,
-      reviewNotes: matches ? "auto-approved (CI↔DOB match)" : "ci_mismatch",
-    },
+    update: record,
+    create: { userId: user.id, ...record },
   });
   await prisma.user.update({
     where: { id: user.id },
     data: { verificationStatus: status },
   });
 
-  return matches ? { success: true } : { reason: "ci_mismatch" };
+  return approved ? { success: true } : { reason };
 }
 
 /** Admin-only: approve or reject a pending student verification. */

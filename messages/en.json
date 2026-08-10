@@ -79,7 +79,10 @@
     "errorCiFormat": "The No. CI must be exactly 11 digits.",
     "results": {
       "approved": "Verified! You can now post ads.",
-      "ciMismatch": "The No. CI doesn't match your date of birth. Check the number or your date of birth."
+      "ciMismatch": "The No. CI doesn't match your date of birth. Check the number or your date of birth.",
+      "notCarne": "We couldn't recognize a Carné de Identidad in the photo. Upload a clear photo of the full front of the card.",
+      "unreadable": "We couldn't read the No. CI clearly. Retake the photo in good light, in focus and without glare, then try again.",
+      "typedMismatch": "The number you typed doesn't match the one on the card in the photo."
     }
   },
   "admin": {

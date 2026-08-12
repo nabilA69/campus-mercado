@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { BOOST_TIERS, isBoostTier } from "@/lib/boosts";
 import { saveImage, isAllowedImage } from "@/lib/storage";
+import { normalizeUrl, isAdPosition } from "@/lib/urls";
 
 async function requireAdmin(locale: string) {
   const user = await getCurrentUser();
@@ -70,46 +71,73 @@ export async function reviewPaymentAction(formData: FormData) {
   revalidatePath(`/${locale}/admin/payments`);
 }
 
+export type AdSlotState = { error?: string; success?: boolean };
+
 /** Create a self-served ad slot (banner sold to a local business). */
-export async function createAdSlotAction(formData: FormData) {
+export async function createAdSlotAction(
+  _prev: AdSlotState,
+  formData: FormData,
+): Promise<AdSlotState> {
   const locale = (formData.get("locale") as string) || "es";
   await requireAdmin(locale);
 
   const position = (formData.get("position") as string) || "home_top";
-  const targetUrl = (formData.get("targetUrl") as string) || "";
-  const advertiserName = (formData.get("advertiserName") as string)?.trim();
-  const startsAtRaw = formData.get("startsAt") as string;
-  const expiresAtRaw = formData.get("expiresAt") as string;
+  if (!isAdPosition(position)) return { error: "badPosition" };
 
-  // Image: uploaded file preferred; else a pasted URL.
-  let imageUrl = (formData.get("imageUrl") as string)?.trim() || "";
+  // Image: uploaded file wins; otherwise accept a pasted URL (bare domains ok).
+  let imageUrl: string | null = null;
   const file = formData.get("image") as File | null;
-  if (file && file.size > 0 && isAllowedImage(file.type)) {
+  if (file && file.size > 0) {
+    if (!isAllowedImage(file.type)) return { error: "badImageType" };
     imageUrl = await saveImage(file, "ads");
+  } else {
+    imageUrl = normalizeUrl(formData.get("imageUrl") as string);
+    if ((formData.get("imageUrl") as string)?.trim() && !imageUrl) {
+      return { error: "badImageUrl" };
+    }
   }
-  if (!imageUrl || !targetUrl) {
-    redirect(`/${locale}/admin/ads`);
+  if (!imageUrl) return { error: "imageRequired" };
+
+  // Destination link is OPTIONAL — a banner with no link is still a valid ad.
+  const rawTarget = ((formData.get("targetUrl") as string) || "").trim();
+  const targetUrl = normalizeUrl(rawTarget);
+  if (rawTarget && !targetUrl) return { error: "badTargetUrl" };
+
+  const startsAtRaw = (formData.get("startsAt") as string) || "";
+  const expiresAtRaw = (formData.get("expiresAt") as string) || "";
+  const startsAt = startsAtRaw ? new Date(`${startsAtRaw}T00:00:00`) : null;
+  // End of the chosen day, otherwise an ad expiring "today" dies at 00:00.
+  const expiresAt = expiresAtRaw ? new Date(`${expiresAtRaw}T23:59:59`) : null;
+  if (startsAt && expiresAt && expiresAt < startsAt) {
+    return { error: "badDateRange" };
   }
 
+  // Reuse an advertiser with the same name instead of piling up duplicates.
+  const advertiserName = ((formData.get("advertiserName") as string) || "").trim();
   let advertiserId: string | undefined;
   if (advertiserName) {
-    const adv = await prisma.advertiser.create({ data: { name: advertiserName } });
-    advertiserId = adv.id;
+    const existing = await prisma.advertiser.findFirst({
+      where: { name: advertiserName },
+    });
+    advertiserId =
+      existing?.id ??
+      (await prisma.advertiser.create({ data: { name: advertiserName } })).id;
   }
 
   await prisma.adSlot.create({
     data: {
       position,
       imageUrl,
-      targetUrl,
+      targetUrl: targetUrl ?? "",
       advertiserId,
       active: true,
-      startsAt: startsAtRaw ? new Date(startsAtRaw) : null,
-      expiresAt: expiresAtRaw ? new Date(expiresAtRaw) : null,
+      startsAt,
+      expiresAt,
     },
   });
 
   revalidatePath(`/${locale}/admin/ads`);
+  return { success: true };
 }
 
 /** Moderate a reported listing: hide it (and resolve its reports) or dismiss the report. */

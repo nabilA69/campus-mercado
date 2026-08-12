@@ -25,11 +25,40 @@ export default async function AdBanner({
   if (!ad) {
     return (
       <a
-        href="mailto:ads@campusmercado.cu"
+        href="mailto:ads@campusmercado.shop"
         className="block h-20 rounded-lg border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400 hover:border-brand hover:text-brand"
       >
         {t("advertise")}
       </a>
+    );
+  }
+
+  // Count the view. Never let a stats write break the page render.
+  try {
+    await prisma.adSlot.update({
+      where: { id: ad.id },
+      data: { impressions: { increment: 1 } },
+    });
+  } catch {
+    /* ignore */
+  }
+
+  const banner = (
+    /* eslint-disable-next-line @next/next/no-img-element */
+    <img
+      src={ad.imageUrl}
+      alt="Ad"
+      loading="lazy"
+      className="w-full h-auto object-cover"
+    />
+  );
+
+  // The destination link is optional — render a plain banner when there isn't one.
+  if (!ad.targetUrl) {
+    return (
+      <div className="block overflow-hidden rounded-lg border border-gray-200">
+        {banner}
+      </div>
     );
   }
 
@@ -40,13 +69,7 @@ export default async function AdBanner({
       rel="noopener noreferrer sponsored"
       className="block overflow-hidden rounded-lg border border-gray-200"
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={ad.imageUrl}
-        alt="Ad"
-        loading="lazy"
-        className="w-full h-auto object-cover"
-      />
+      {banner}
     </a>
   );
 }

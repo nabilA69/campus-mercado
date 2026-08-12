@@ -8,7 +8,8 @@ export async function GET(
 ) {
   const { id } = await params;
   const ad = await prisma.adSlot.findUnique({ where: { id } });
-  if (!ad) {
+  // No ad, or an ad with no destination link -> just go home instead of throwing.
+  if (!ad || !ad.targetUrl) {
     return NextResponse.redirect(new URL("/", _req.url));
   }
   await prisma.adSlot.update({

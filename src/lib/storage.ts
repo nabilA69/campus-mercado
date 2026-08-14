@@ -13,6 +13,15 @@ const DRIVER = process.env.STORAGE_DRIVER || "local";
 
 export type UploadFolder = "ids" | "listings" | "ads";
 
+/** Thrown when storage is misconfigured or the upload fails, so callers can show
+ *  a real message instead of crashing the request with a 500. */
+export class StorageError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "StorageError";
+  }
+}
+
 const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
 
 export function isAllowedImage(type: string): boolean {
@@ -49,17 +58,29 @@ async function saveToVercelBlob(
   bytes: Buffer,
   contentType: string,
 ): Promise<string> {
-  const { put } = await import("@vercel/blob");
-  // Only pass `token` if it's explicitly set; otherwise let the SDK resolve
-  // credentials itself (on Vercel a connected Blob store is auto-authenticated).
+  // @vercel/blob needs BLOB_READ_WRITE_TOKEN. Connecting a Blob store in the
+  // dashboard injects it; if it is missing the SDK throws and the whole request
+  // 500s, so fail with a message the caller can actually show a human.
   const token = process.env.BLOB_READ_WRITE_TOKEN;
-  const { url } = await put(key, bytes, {
-    access: "public",
-    contentType,
-    addRandomSuffix: false,
-    ...(token ? { token } : {}),
-  });
-  return url;
+  if (!token) {
+    throw new StorageError(
+      "BLOB_READ_WRITE_TOKEN is not set. Connect the Blob store to this project (Vercel > Storage) or paste the token into the project's environment variables, then redeploy.",
+    );
+  }
+
+  try {
+    const { put } = await import("@vercel/blob");
+    const { url } = await put(key, bytes, {
+      access: "public",
+      contentType,
+      addRandomSuffix: false,
+      token,
+    });
+    return url;
+  } catch (err) {
+    if (err instanceof StorageError) throw err;
+    throw new StorageError(`Vercel Blob upload failed: ${String(err)}`);
+  }
 }
 
 async function saveToLocal(key: string, bytes: Buffer): Promise<string> {

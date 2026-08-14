@@ -45,7 +45,14 @@ export async function submitVerificationAction(
   if (!isAllowedImage(file.type)) return { error: "errorType" };
 
   const bytes = Buffer.from(await file.arrayBuffer());
-  const url = await saveImageBytes(bytes, file.type, "ids");
+  // If storage is down we still verify (the CI↔DOB check doesn't need the file);
+  // we just record that the image couldn't be kept, rather than blocking a student.
+  let url = "";
+  try {
+    url = await saveImageBytes(bytes, file.type, "ids");
+  } catch (err) {
+    console.error("[verify] ID image upload failed:", err);
+  }
 
   let approved: boolean;
   let ciNumber: string | null;

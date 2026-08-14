@@ -89,7 +89,12 @@ export async function createAdSlotAction(
   const file = formData.get("image") as File | null;
   if (file && file.size > 0) {
     if (!isAllowedImage(file.type)) return { error: "badImageType" };
-    imageUrl = await saveImage(file, "ads");
+    try {
+      imageUrl = await saveImage(file, "ads");
+    } catch (err) {
+      console.error("[ads] image upload failed:", err);
+      return { error: "storageUnavailable" };
+    }
   } else {
     imageUrl = normalizeUrl(formData.get("imageUrl") as string);
     if ((formData.get("imageUrl") as string)?.trim() && !imageUrl) {

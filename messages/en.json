@@ -125,7 +125,8 @@
       "priceInvalid": "Invalid price.",
       "categoryRequired": "Choose a category.",
       "contactRequired": "Enter a valid contact.",
-      "imageType": "Photos must be JPG, PNG or WebP."
+      "imageType": "Photos must be JPG, PNG or WebP.",
+      "storageUnavailable": "We couldn't save the photos right now. Try again, or post the ad without photos."
     }
   },
   "listing": {
@@ -258,7 +259,8 @@
       "badImageUrl": "That image URL isn't valid.",
       "imageRequired": "You must upload an image or provide an image URL.",
       "badTargetUrl": "That destination link isn't valid. Example: example.com",
-      "badDateRange": "The end date can't be before the start date."
+      "badDateRange": "The end date can't be before the start date.",
+      "storageUnavailable": "The image couldn't be saved: storage isn't configured. Connect the Blob Store in Vercel (Storage) and redeploy. In the meantime you can use an image URL instead."
     },
     "existing": "Existing slots",
     "none": "No ad slots yet.",

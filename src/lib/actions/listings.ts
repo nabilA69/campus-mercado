@@ -57,7 +57,12 @@ export async function createListingAction(
   const imageUrls: string[] = [];
   for (const file of files.slice(0, MAX_IMAGES)) {
     if (!isAllowedImage(file.type)) return { error: "imageType" };
-    imageUrls.push(await saveImage(file, "listings"));
+    try {
+      imageUrls.push(await saveImage(file, "listings"));
+    } catch (err) {
+      console.error("[listings] image upload failed:", err);
+      return { error: "storageUnavailable" };
+    }
   }
 
   const listing = await prisma.listing.create({

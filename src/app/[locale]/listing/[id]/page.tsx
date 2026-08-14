@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
 import { fetchListingsFeaturedFirst } from "@/lib/listings-query";
 import ReportButton from "@/components/ReportButton";
+import ContactButton from "@/components/ContactButton";
 import ListingCarousel from "@/components/ListingCarousel";
 import InterestTracker from "@/components/InterestTracker";
 
@@ -136,10 +137,11 @@ export default async function ListingPage({
           <div className="mt-6 rounded-lg border border-gray-200 bg-white p-4">
             <h2 className="font-semibold mb-2">{t("contactTitle")}</h2>
             {canSeeContact ? (
-              <p className="text-lg font-mono">
-                {listing.contactMethod === "email" ? "✉️ " : "📞 "}
-                {listing.contactValue}
-              </p>
+              <ContactButton
+                method={listing.contactMethod}
+                value={listing.contactValue}
+                listingTitle={listing.title}
+              />
             ) : (
               <div>
                 <p className="text-sm text-gray-500 mb-3">{t("contactGated")}</p>

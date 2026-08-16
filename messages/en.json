@@ -107,6 +107,8 @@
     "currency": "Currency",
     "category": "Category",
     "categoryChoose": "Choose a category",
+    "province": "Province",
+    "provinceChoose": "Choose your province",
     "campus": "Campus / Faculty (optional)",
     "campusPh": "e.g. Engineering Faculty",
     "contactMethod": "Contact method",
@@ -277,6 +279,20 @@
   },
   "splash": {
     "loading": "Loading..."
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "What are you looking for?",
+    "button": "Search",
+    "province": "Province",
+    "allProvinces": "All of Cuba",
+    "allCategories": "All",
+    "filters": "Filters",
+    "clearAll": "Clear all",
+    "resultsCount": "{count, plural, =0 {No results} one {# result} other {# results}}",
+    "noResults": "We couldn't find any ads with those filters.",
+    "searchAllCuba": "Search all of Cuba",
+    "browseProvinces": "Browse by province"
   },
   "houseAds": {
     "free": {

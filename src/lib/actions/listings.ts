@@ -5,6 +5,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { saveImage, isAllowedImage } from "@/lib/storage";
+import { isProvinceSlug } from "@/lib/provinces";
 
 export type ListingState = { error?: string };
 
@@ -16,6 +17,7 @@ const schema = z.object({
   price: z.coerce.number().int("priceInvalid").min(0, "priceInvalid"),
   currency: z.enum(["CUP", "USD", "MLC"]),
   categoryId: z.string().min(1, "categoryRequired"),
+  province: z.string().trim().optional(),
   campus: z.string().trim().max(80).optional(),
   contactMethod: z.enum(["phone", "whatsapp", "email"]),
   contactValue: z.string().trim().min(3, "contactRequired").max(120),
@@ -39,6 +41,7 @@ export async function createListingAction(
     price: formData.get("price"),
     currency: formData.get("currency"),
     categoryId: formData.get("categoryId"),
+    province: formData.get("province") || undefined,
     campus: formData.get("campus") || undefined,
     contactMethod: formData.get("contactMethod"),
     contactValue: formData.get("contactValue"),
@@ -73,6 +76,9 @@ export async function createListingAction(
       priceAmount: parsed.data.price,
       currency: parsed.data.currency,
       categoryId: parsed.data.categoryId,
+      province: isProvinceSlug(parsed.data.province)
+        ? parsed.data.province
+        : null,
       campus: parsed.data.campus || null,
       contactMethod: parsed.data.contactMethod,
       contactValue: parsed.data.contactValue,

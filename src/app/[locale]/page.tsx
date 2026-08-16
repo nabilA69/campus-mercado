@@ -7,6 +7,7 @@ import { CATEGORY_SEED } from "@/lib/categories";
 import ListingCard from "@/components/ListingCard";
 import Recommended3D from "@/components/Recommended3D";
 import AdBanner from "@/components/AdBanner";
+import SearchBar from "@/components/SearchBar";
 import { fetchListingsFeaturedFirst } from "@/lib/listings-query";
 
 export default async function HomePage({
@@ -55,9 +56,14 @@ export default async function HomePage({
         <p className="mt-3 text-gray-600 max-w-xl mx-auto">
           {t("heroSubtitle")}
         </p>
+        {/* search + province filter */}
+        <div className="mt-7">
+          <SearchBar />
+        </div>
+
         <Link
           href="/post"
-          className="mt-6 inline-block rounded-md bg-brand px-5 py-2.5 text-white font-semibold hover:bg-brand-dark"
+          className="mt-5 inline-block rounded-md bg-brand px-5 py-2.5 text-white font-semibold hover:bg-brand-dark"
         >
           {t("postCta")}
         </Link>

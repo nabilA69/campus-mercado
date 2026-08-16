@@ -6,6 +6,7 @@ import {
   createListingAction,
   type ListingState,
 } from "@/lib/actions/listings";
+import { PROVINCES } from "@/lib/provinces";
 
 export type CategoryOption = { id: string; name: string };
 
@@ -76,6 +77,19 @@ export default function PostListingForm({
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
+            </option>
+          ))}
+        </select>
+      </Labeled>
+
+      <Labeled label={t("province")}>
+        <select name="province" required defaultValue="" className={inputCls}>
+          <option value="" disabled>
+            {t("provinceChoose")}
+          </option>
+          {PROVINCES.map((p) => (
+            <option key={p.slug} value={p.slug}>
+              {p.name}
             </option>
           ))}
         </select>

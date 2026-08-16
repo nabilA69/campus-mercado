@@ -7,6 +7,7 @@ import { formatPrice } from "@/lib/format";
 import { fetchListingsFeaturedFirst } from "@/lib/listings-query";
 import ReportButton from "@/components/ReportButton";
 import ContactButton from "@/components/ContactButton";
+import { provinceName } from "@/lib/provinces";
 import ListingCarousel from "@/components/ListingCarousel";
 import InterestTracker from "@/components/InterestTracker";
 
@@ -98,8 +99,20 @@ export default async function ListingPage({
             {formatPrice(listing.priceAmount, listing.currency, t("free"))}
           </p>
 
-          {listing.campus && (
-            <p className="mt-2 text-sm text-gray-500">📍 {listing.campus}</p>
+          {(listing.province || listing.campus) && (
+            <p className="mt-2 text-sm text-gray-500">
+              📍{" "}
+              {listing.province && (
+                <Link
+                  href={`/search?province=${listing.province}`}
+                  className="text-brand hover:underline"
+                >
+                  {provinceName(listing.province)}
+                </Link>
+              )}
+              {listing.province && listing.campus ? " · " : ""}
+              {listing.campus}
+            </p>
           )}
 
           <p className="mt-4 whitespace-pre-wrap text-gray-700">

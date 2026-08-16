@@ -73,6 +73,7 @@ model Listing {
   currency      String   @default("CUP") // CUP | USD | MLC
   categoryId    String
   category      Category @relation(fields: [categoryId], references: [id])
+  province      String? // Cuban province slug, see src/lib/provinces.ts
   campus        String?
   status        String   @default("active") // active | sold | hidden | pending
   contactMethod String   @default("phone") // phone | whatsapp | email
@@ -87,6 +88,7 @@ model Listing {
   @@index([categoryId])
   @@index([status])
   @@index([campus])
+  @@index([province])
 }
 
 model ListingImage {

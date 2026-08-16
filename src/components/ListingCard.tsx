@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/format";
+import { provinceName } from "@/lib/provinces";
 
 export type ListingCardData = {
   id: string;
@@ -8,6 +9,7 @@ export type ListingCardData = {
   priceAmount: number;
   currency: string;
   campus: string | null;
+  province?: string | null;
   imageUrl: string | null;
   isFeatured?: boolean;
 };
@@ -43,9 +45,11 @@ export default async function ListingCard({ listing }: { listing: ListingCardDat
         <p className="mt-1 text-brand font-bold">
           {formatPrice(listing.priceAmount, listing.currency, t("free"))}
         </p>
-        {listing.campus && (
+        {(listing.province || listing.campus) && (
           <p className="mt-auto pt-1 text-xs text-gray-400 truncate">
-            {listing.campus}
+            {[provinceName(listing.province), listing.campus]
+              .filter(Boolean)
+              .join(" · ")}
           </p>
         )}
       </div>

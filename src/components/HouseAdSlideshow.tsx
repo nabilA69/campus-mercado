@@ -106,6 +106,10 @@ export default function HouseAdSlideshow() {
         const style: React.CSSProperties = {
           transform: `perspective(1000px) rotateY(${rotate}deg) translateX(${translate}%) scale(${isActive ? 1 : 0.88})`,
           opacity: isActive ? 1 : 0,
+          // outgoing slides clear quickly so they don't ghost through the new one
+          transition: `transform 700ms cubic-bezier(0.22,0.75,0.3,1), opacity ${
+            isActive ? 420 : 200
+          }ms ease`,
           pointerEvents: isActive ? "auto" : "none",
           zIndex: isActive ? 2 : 1,
         };

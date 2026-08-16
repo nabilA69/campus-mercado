@@ -63,8 +63,9 @@ export default async function HomePage({
         </Link>
       </section>
 
-      {/* Self-served ad banner (home_top) */}
-      <div className="mb-8">
+      {/* Paid ad banner, or our own promo slideshow when nothing is booked.
+          mb-10 leaves room for the slideshow's dots, which sit below it. */}
+      <div className="mb-10">
         <AdBanner position="home_top" />
       </div>
 

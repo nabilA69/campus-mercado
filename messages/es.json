@@ -278,6 +278,33 @@
   "splash": {
     "loading": "Cargando..."
   },
+  "houseAds": {
+    "free": {
+      "title": "Publicar es gratis",
+      "text": "Vende lo que ya no usas en minutos.",
+      "cta": "Publicar"
+    },
+    "verified": {
+      "title": "Solo estudiantes verificados",
+      "text": "Compra y vende con confianza, carné verificado.",
+      "cta": "Registrarme"
+    },
+    "boost": {
+      "title": "Destaca tu anuncio",
+      "text": "Aparece primero y vende más rápido.",
+      "cta": "Destacar"
+    },
+    "everything": {
+      "title": "Todo para tu carrera",
+      "text": "Libros, laptops, cuartos, tutorías y más.",
+      "cta": "Explorar"
+    },
+    "advertise": {
+      "title": "Anúnciate aquí",
+      "text": "Llega a los estudiantes de tu ciudad.",
+      "cta": "Contactar"
+    }
+  },
   "footer": {
     "tagline": "El mercado seguro para estudiantes verificados en Cuba.",
     "advertise": "Anúnciate aquí"

@@ -1,13 +1,12 @@
-import { getTranslations } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
+import HouseAdSlideshow from "./HouseAdSlideshow";
 
-/** Renders the active self-served ad for a position, or an "advertise here" fallback. */
+/** Renders the active paid ad for a position, or our own promo slideshow. */
 export default async function AdBanner({
   position = "home_top",
 }: {
   position?: string;
 }) {
-  const t = await getTranslations("footer");
   const now = new Date();
 
   const ad = await prisma.adSlot.findFirst({
@@ -22,16 +21,9 @@ export default async function AdBanner({
     orderBy: { createdAt: "desc" },
   });
 
-  if (!ad) {
-    return (
-      <a
-        href="mailto:ads@campusmercado.shop"
-        className="block h-20 rounded-lg border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400 hover:border-brand hover:text-brand"
-      >
-        {t("advertise")}
-      </a>
-    );
-  }
+  // No paid advertiser booked for this slot yet -> run our own promo slideshow
+  // instead of leaving an empty placeholder.
+  if (!ad) return <HouseAdSlideshow />;
 
   // Count the view. Never let a stats write break the page render.
   try {

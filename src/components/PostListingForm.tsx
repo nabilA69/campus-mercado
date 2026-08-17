@@ -1,12 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import {
   createListingAction,
   type ListingState,
 } from "@/lib/actions/listings";
 import { PROVINCES } from "@/lib/provinces";
+import { FACULTIES, universitiesFor } from "@/lib/universities";
 
 export type CategoryOption = { id: string; name: string };
 
@@ -21,6 +22,8 @@ export default function PostListingForm({
     createListingAction,
     {},
   );
+  const [province, setProvince] = useState("");
+  const [university, setUniversity] = useState("");
 
   return (
     <form action={formAction} className="space-y-4">
@@ -83,7 +86,16 @@ export default function PostListingForm({
       </Labeled>
 
       <Labeled label={t("province")}>
-        <select name="province" required defaultValue="" className={inputCls}>
+        <select
+          name="province"
+          required
+          value={province}
+          onChange={(e) => {
+            setProvince(e.target.value);
+            setUniversity(""); // universities depend on the province
+          }}
+          className={inputCls}
+        >
           <option value="" disabled>
             {t("provinceChoose")}
           </option>
@@ -95,14 +107,49 @@ export default function PostListingForm({
         </select>
       </Labeled>
 
-      <Labeled label={t("campus")}>
-        <input
-          name="campus"
-          type="text"
-          maxLength={80}
-          placeholder={t("campusPh")}
-          className={inputCls}
-        />
+      {/* Universities are filtered by the chosen province */}
+      <Labeled label={t("university")}>
+        <select
+          name="university"
+          value={university}
+          disabled={!province}
+          onChange={(e) => setUniversity(e.target.value)}
+          className={`${inputCls} disabled:bg-gray-50 disabled:text-gray-400`}
+        >
+          <option value="">
+            {province ? t("universityChoose") : t("provinceFirst")}
+          </option>
+          {universitiesFor(province).map((u) => (
+            <option key={u} value={u}>
+              {u}
+            </option>
+          ))}
+          <option value="__other__">{t("otherOption")}</option>
+        </select>
+      </Labeled>
+
+      {university === "__other__" && (
+        <Labeled label={t("universityOther")}>
+          <input
+            name="universityOther"
+            type="text"
+            maxLength={120}
+            required
+            placeholder={t("universityOtherPh")}
+            className={inputCls}
+          />
+        </Labeled>
+      )}
+
+      <Labeled label={t("faculty")}>
+        <select name="faculty" defaultValue="" className={inputCls}>
+          <option value="">{t("facultyChoose")}</option>
+          {FACULTIES.map((f) => (
+            <option key={f} value={f}>
+              {f}
+            </option>
+          ))}
+        </select>
       </Labeled>
 
       <div className="grid grid-cols-2 gap-3">

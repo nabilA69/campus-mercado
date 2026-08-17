@@ -9,6 +9,21 @@ import { isProvinceSlug } from "@/lib/provinces";
 
 export type ListingState = { error?: string };
 
+/** Combines the chosen university (or a typed-in one) and faculty into one label. */
+function buildCampusLabel(d: {
+  university?: string;
+  universityOther?: string;
+  faculty?: string;
+}): string | null {
+  const uni =
+    d.university === "__other__" ? d.universityOther?.trim() : d.university?.trim();
+  const faculty = d.faculty?.trim();
+  const label = [uni, faculty && faculty !== "Otra" ? faculty : null]
+    .filter(Boolean)
+    .join(" · ");
+  return label || null;
+}
+
 const MAX_IMAGES = 4;
 
 const schema = z.object({
@@ -18,7 +33,9 @@ const schema = z.object({
   currency: z.enum(["CUP", "USD", "MLC"]),
   categoryId: z.string().min(1, "categoryRequired"),
   province: z.string().trim().optional(),
-  campus: z.string().trim().max(80).optional(),
+  university: z.string().trim().max(160).optional(),
+  universityOther: z.string().trim().max(120).optional(),
+  faculty: z.string().trim().max(80).optional(),
   contactMethod: z.enum(["phone", "whatsapp", "email"]),
   contactValue: z.string().trim().min(3, "contactRequired").max(120),
 });
@@ -42,7 +59,9 @@ export async function createListingAction(
     currency: formData.get("currency"),
     categoryId: formData.get("categoryId"),
     province: formData.get("province") || undefined,
-    campus: formData.get("campus") || undefined,
+    university: formData.get("university") || undefined,
+    universityOther: formData.get("universityOther") || undefined,
+    faculty: formData.get("faculty") || undefined,
     contactMethod: formData.get("contactMethod"),
     contactValue: formData.get("contactValue"),
   });
@@ -79,7 +98,8 @@ export async function createListingAction(
       province: isProvinceSlug(parsed.data.province)
         ? parsed.data.province
         : null,
-      campus: parsed.data.campus || null,
+      // "campus" holds the human-readable place: university + faculty.
+      campus: buildCampusLabel(parsed.data),
       contactMethod: parsed.data.contactMethod,
       contactValue: parsed.data.contactValue,
       images: {

@@ -49,17 +49,18 @@ export default async function SearchPage({
 
   const cards = await fetchListingsFeaturedFirst(where, 48);
 
-  // Build a link that keeps the other filters intact.
+  // Build a link that keeps the other filters intact. next-intl's Link needs the
+  // object form for query params — a "/search?x=y" string is not a valid href.
   const linkWith = (patch: Record<string, string>) => {
-    const p = new URLSearchParams();
-    if (q) p.set("q", q);
-    if (province) p.set("province", province);
-    if (categorySlug) p.set("category", categorySlug);
+    const query: Record<string, string> = {};
+    if (q) query.q = q;
+    if (province) query.province = province;
+    if (categorySlug) query.category = categorySlug;
     for (const [k, v] of Object.entries(patch)) {
-      if (v) p.set(k, v);
-      else p.delete(k);
+      if (v) query[k] = v;
+      else delete query[k];
     }
-    return `/search?${p.toString()}`;
+    return { pathname: "/search" as const, query };
   };
 
   const activeProvinceName = provinceName(province);

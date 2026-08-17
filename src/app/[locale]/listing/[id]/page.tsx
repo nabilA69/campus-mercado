@@ -104,7 +104,10 @@ export default async function ListingPage({
               📍{" "}
               {listing.province && (
                 <Link
-                  href={`/search?province=${listing.province}`}
+                  href={{
+                    pathname: "/search",
+                    query: { province: listing.province },
+                  }}
                   className="text-brand hover:underline"
                 >
                   {provinceName(listing.province)}

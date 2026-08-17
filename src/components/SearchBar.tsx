@@ -27,10 +27,11 @@ export default function SearchBar({
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    const params = new URLSearchParams();
-    if (q.trim()) params.set("q", q.trim());
-    if (province) params.set("province", province);
-    router.push(`/search?${params.toString()}`);
+    const query: Record<string, string> = {};
+    if (q.trim()) query.q = q.trim();
+    if (province) query.province = province;
+    // object form: next-intl's router expects query params separately
+    router.push({ pathname: "/search", query });
   }
 
   return (

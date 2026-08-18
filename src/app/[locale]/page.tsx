@@ -8,6 +8,7 @@ import ListingCard from "@/components/ListingCard";
 import Recommended3D from "@/components/Recommended3D";
 import AdBanner from "@/components/AdBanner";
 import SearchBar from "@/components/SearchBar";
+import CategoryDropdown from "@/components/CategoryDropdown";
 import { fetchListingsFeaturedFirst } from "@/lib/listings-query";
 
 export default async function HomePage({
@@ -83,25 +84,15 @@ export default async function HomePage({
         featuredLabel={tl("featured")}
       />
 
-      {/* Categories */}
-      <section className="mb-10">
-        <h2 className="text-lg font-bold mb-4">{t("browseCategories")}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/c/${cat.slug}`}
-              className="rounded-lg bg-white border border-gray-200 p-4 hover:border-brand hover:shadow-sm transition flex items-center gap-3"
-            >
-              <span className="text-2xl" aria-hidden>
-                {iconFor(cat.slug)}
-              </span>
-              <span className="font-medium text-sm">
-                {locale === "es" ? cat.nameEs : cat.nameEn}
-              </span>
-            </Link>
-          ))}
-        </div>
+      {/* Categories — dropdown, navigates on select */}
+      <section className="mb-10 max-w-md">
+        <CategoryDropdown
+          categories={categories.map((cat) => ({
+            slug: cat.slug,
+            name: locale === "es" ? cat.nameEs : cat.nameEn,
+            icon: iconFor(cat.slug),
+          }))}
+        />
       </section>
 
       {/* Recent listings */}

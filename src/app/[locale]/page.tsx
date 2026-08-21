@@ -64,7 +64,7 @@ export default async function HomePage({
 
         <Link
           href="/post"
-          className="mt-5 inline-block rounded-md bg-brand px-5 py-2.5 text-white font-semibold hover:bg-brand-dark"
+          className="mt-5 inline-block rounded-md border-2 border-brand bg-white px-5 py-2.5 font-semibold text-brand transition hover:bg-brand hover:text-white"
         >
           {t("postCta")}
         </Link>

@@ -10,6 +10,7 @@ export type ListingCardData = {
   currency: string;
   campus: string | null;
   province?: string | null;
+  createdAt?: Date | string | null;
   imageUrl: string | null;
   isFeatured?: boolean;
 };

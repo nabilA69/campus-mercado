@@ -4,7 +4,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { CATEGORY_SEED } from "@/lib/categories";
-import ListingCard from "@/components/ListingCard";
+import ListingRow from "@/components/ListingRow";
+import CategorySidebar from "@/components/CategorySidebar";
 import Recommended3D from "@/components/Recommended3D";
 import AdBanner from "@/components/AdBanner";
 import SearchBar from "@/components/SearchBar";
@@ -30,7 +31,7 @@ export default async function HomePage({
     CATEGORY_SEED.find((c) => c.slug === slug)?.icon ?? "📦";
 
   // Recent active listings (boosted ones surface first, then newest).
-  const cards = await fetchListingsFeaturedFirst({ status: "active" }, 12);
+  const cards = await fetchListingsFeaturedFirst({ status: "active" }, 40);
 
   // Personalized recommendations from the categories this visitor browses most
   // (stored in the cm_interests cookie by InterestTracker on listing pages).
@@ -47,36 +48,28 @@ export default async function HomePage({
         )
       : [];
 
-  return (
-    <div className="mx-auto max-w-5xl px-4">
-      {/* Hero */}
-      <section className="py-10 sm:py-14 text-center">
-        <h1 className="text-2xl sm:text-4xl font-extrabold text-foreground">
-          {t("heroTitle")}
-        </h1>
-        <p className="mt-3 text-gray-600 max-w-xl mx-auto">
-          {t("heroSubtitle")}
-        </p>
-        {/* search + province filter */}
-        <div className="mt-7">
-          <SearchBar />
-        </div>
+  // per-category counts for the sidebar
+  const counts = await prisma.listing.groupBy({
+    by: ["categoryId"],
+    where: { status: "active" },
+    _count: { _all: true },
+  });
+  const countFor = (id: string) =>
+    counts.find((c) => c.categoryId === id)?._count._all ?? 0;
 
-        <Link
-          href="/post"
-          className="mt-5 inline-block rounded-md border-2 border-brand bg-white px-5 py-2.5 font-semibold text-brand transition hover:bg-brand hover:text-white"
-        >
-          {t("postCta")}
-        </Link>
+  return (
+    <div className="mx-auto max-w-6xl px-4">
+      {/* Search first — the primary way into a classifieds site */}
+      <section className="py-5">
+        <SearchBar />
       </section>
 
-      {/* Paid ad banner, or our own promo slideshow when nothing is booked.
-          mb-10 leaves room for the slideshow's dots, which sit below it. */}
-      <div className="mb-10">
+      {/* Paid ad banner, or our own promo slideshow when nothing is booked. */}
+      <div className="mb-8">
         <AdBanner position="home_top" />
       </div>
 
-      {/* Personalized recommendations — dramatic 3D slideshow, auto-advancing */}
+      {/* Personalized recommendations — 3D slideshow, auto-advancing */}
       <Recommended3D
         title={t("recommended")}
         cards={recommended}
@@ -84,32 +77,55 @@ export default async function HomePage({
         featuredLabel={tl("featured")}
       />
 
-      {/* Categories — dropdown, navigates on select */}
-      <section className="mb-10 max-w-md">
-        <CategoryDropdown
-          categories={categories.map((cat) => ({
-            slug: cat.slug,
-            name: locale === "es" ? cat.nameEs : cat.nameEn,
-            icon: iconFor(cat.slug),
-          }))}
-        />
-      </section>
+      <div className="flex flex-col gap-6 pb-12 lg:flex-row">
+        {/* Sidebar: categories + provinces (desktop) */}
+        <div className="hidden lg:block">
+          <CategorySidebar
+            categories={categories.map((cat) => ({
+              slug: cat.slug,
+              name: locale === "es" ? cat.nameEs : cat.nameEn,
+              icon: iconFor(cat.slug),
+              count: countFor(cat.id),
+            }))}
+          />
+        </div>
 
-      {/* Recent listings */}
-      <section className="mb-12">
-        <h2 className="text-lg font-bold mb-4">{t("recent")}</h2>
-        {cards.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {cards.map((c) => (
-              <ListingCard key={c.id} listing={c} />
-            ))}
+        {/* Mobile: categories as a dropdown instead of a sidebar */}
+        <div className="lg:hidden">
+          <CategoryDropdown
+            categories={categories.map((cat) => ({
+              slug: cat.slug,
+              name: locale === "es" ? cat.nameEs : cat.nameEn,
+              icon: iconFor(cat.slug),
+            }))}
+          />
+        </div>
+
+        {/* Main column: dense list of recent ads */}
+        <main className="min-w-0 flex-1">
+          <div className="mb-3 flex items-baseline justify-between gap-3">
+            <h2 className="text-lg font-bold">{t("recent")}</h2>
+            <Link
+              href="/post"
+              className="shrink-0 rounded-md border-2 border-brand bg-white px-3 py-1.5 text-sm font-semibold text-brand transition hover:bg-brand hover:text-white"
+            >
+              {t("postCta")}
+            </Link>
           </div>
-        ) : (
-          <div className="rounded-lg bg-white border border-gray-200 p-8 text-center text-gray-400">
-            {t("noListings")}
-          </div>
-        )}
-      </section>
+
+          {cards.length > 0 ? (
+            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+              {cards.map((c) => (
+                <ListingRow key={c.id} listing={c} locale={locale} />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-400">
+              {t("noListings")}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

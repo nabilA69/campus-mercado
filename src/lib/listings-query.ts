@@ -46,6 +46,7 @@ export async function fetchListingsFeaturedFirst(
     currency: l.currency,
     campus: l.campus,
     province: l.province,
+    createdAt: l.createdAt,
     imageUrl: l.images[0]?.url ?? null,
     isFeatured: boostedIds.has(l.id),
   }));

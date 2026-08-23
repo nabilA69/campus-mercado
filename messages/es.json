@@ -431,7 +431,7 @@
     "save": "Guardar",
     "delete": "Eliminar",
     "order": "Orden",
-    "used": "{count} anuncios",
+    "used": "Anuncios: {count}",
     "inUse": "No se puede eliminar una categoría que todavía tiene anuncios."
   }
 }

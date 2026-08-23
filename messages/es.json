@@ -331,5 +331,10 @@
   "footer": {
     "tagline": "El mercado seguro para estudiantes verificados en Cuba.",
     "advertise": "Anúnciate aquí"
+  },
+  "view": {
+    "label": "Forma de ver",
+    "list": "Ver en lista",
+    "grid": "Ver con fotos"
   }
 }

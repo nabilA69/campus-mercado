@@ -5,6 +5,8 @@ import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { CATEGORY_SEED } from "@/lib/categories";
 import ListingRow from "@/components/ListingRow";
+import ListingCard from "@/components/ListingCard";
+import ViewToggle, { type ViewMode } from "@/components/ViewToggle";
 import CategorySidebar from "@/components/CategorySidebar";
 import Recommended3D from "@/components/Recommended3D";
 import AdBanner from "@/components/AdBanner";
@@ -14,10 +16,13 @@ import { fetchListingsFeaturedFirst } from "@/lib/listings-query";
 
 export default async function HomePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ view?: string }>;
 }) {
   const { locale } = await params;
+  const { view: viewParam } = await searchParams;
   // Render fresh each request so new posts, boosts and moderation appear immediately.
   await connection();
   setRequestLocale(locale);
@@ -36,6 +41,13 @@ export default async function HomePage({
   // Personalized recommendations from the categories this visitor browses most
   // (stored in the cm_interests cookie by InterestTracker on listing pages).
   const store = await cookies();
+  // URL wins (shareable/refresh-safe), then the saved cookie, else the compact list.
+  const view: ViewMode =
+    viewParam === "grid" || viewParam === "list"
+      ? viewParam
+      : store.get("cm_view")?.value === "grid"
+        ? "grid"
+        : "list";
   const interestSlugs = (store.get("cm_interests")?.value ?? "")
     .split(",")
     .map((s) => decodeURIComponent(s))
@@ -103,22 +115,33 @@ export default async function HomePage({
 
         {/* Main column: dense list of recent ads */}
         <main className="min-w-0 flex-1">
-          <div className="mb-3 flex items-baseline justify-between gap-3">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-lg font-bold">{t("recent")}</h2>
-            <Link
-              href="/post"
-              className="shrink-0 rounded-md border-2 border-brand bg-white px-3 py-1.5 text-sm font-semibold text-brand transition hover:bg-brand hover:text-white"
-            >
-              {t("postCta")}
-            </Link>
+            <div className="flex items-center gap-2">
+              <ViewToggle current={view} />
+              <Link
+                href="/post"
+                className="shrink-0 rounded-md border-2 border-brand bg-white px-3 py-1.5 text-sm font-semibold text-brand transition hover:bg-brand hover:text-white"
+              >
+                {t("postCta")}
+              </Link>
+            </div>
           </div>
 
           {cards.length > 0 ? (
-            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-              {cards.map((c) => (
-                <ListingRow key={c.id} listing={c} locale={locale} />
-              ))}
-            </div>
+            view === "grid" ? (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4">
+                {cards.map((c) => (
+                  <ListingCard key={c.id} listing={c} />
+                ))}
+              </div>
+            ) : (
+              <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+                {cards.map((c) => (
+                  <ListingRow key={c.id} listing={c} locale={locale} />
+                ))}
+              </div>
+            )
           ) : (
             <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-400">
               {t("noListings")}

@@ -211,10 +211,14 @@
     "rejected": "The payment was rejected. Contact us if you think this is a mistake."
   },
   "adminNav": {
+    "dashboard": "Dashboard",
     "verifications": "Verifications",
+    "users": "Users",
+    "listings": "Listings",
     "payments": "Payments",
     "reports": "Reports",
-    "ads": "Ads"
+    "ads": "Advertising",
+    "categories": "Categories"
   },
   "report": {
     "report": "Report ad",
@@ -336,5 +340,98 @@
     "label": "View mode",
     "list": "List view",
     "grid": "Photo view"
+  },
+  "adminDash": {
+    "title": "Admin dashboard",
+    "signedInAs": "Signed in as {email}",
+    "needsAttention": "Needs attention",
+    "overview": "Site overview",
+    "revenue": "Revenue collected",
+    "users": "Users",
+    "verified": "Verified",
+    "listings": "Total listings",
+    "active": "Active listings",
+    "boosted": "Active boosts",
+    "activeAds": "Active banners",
+    "pendingVerifications": "Pending verifications",
+    "pendingPayments": "Payments to confirm",
+    "openReports": "Open reports",
+    "noRevenue": "No confirmed payments yet.",
+    "revenueNote": "Total of confirmed boost and advertising payments."
+  },
+  "adminUsers": {
+    "title": "Users",
+    "searchPh": "Search by name or email…",
+    "search": "Search",
+    "none": "No users found.",
+    "you": "you",
+    "joined": "Joined",
+    "ads": "Listings",
+    "dob": "Born",
+    "apply": "Apply",
+    "makeAdmin": "Make admin",
+    "makeStudent": "Remove admin",
+    "delete": "Delete user",
+    "confirmDelete": "Yes, delete permanently",
+    "deleteWarning": "Also deletes their listings and payments.",
+    "status": {
+      "unverified": "Unverified",
+      "pending": "Pending",
+      "approved": "Verified",
+      "rejected": "Rejected"
+    }
+  },
+  "adminListings": {
+    "title": "Listings",
+    "searchPh": "Search by title or description…",
+    "search": "Search",
+    "all": "All",
+    "none": "No listings found.",
+    "apply": "Apply",
+    "feature": "Boost",
+    "unfeature": "Remove boost",
+    "delete": "Delete",
+    "confirmDelete": "Yes, delete listing",
+    "statusLabel": {
+      "active": "Active",
+      "hidden": "Hidden",
+      "sold": "Sold"
+    },
+    "edit": "Edit"
+  },
+  "adminEdit": {
+    "title": "Edit listing",
+    "back": "Back to listings",
+    "saved": "Changes saved.",
+    "required": "Title, description and contact are required.",
+    "fTitle": "Title",
+    "fDescription": "Description",
+    "fPrice": "Price",
+    "fCurrency": "Currency",
+    "fCategory": "Category",
+    "fProvince": "Province",
+    "fCampus": "University / faculty",
+    "fContactMethod": "Contact method",
+    "fContactValue": "Phone or email",
+    "phone": "Phone",
+    "email": "Email",
+    "save": "Save changes",
+    "photos": "Photos",
+    "noPhotos": "This listing has no photos.",
+    "removePhoto": "Remove"
+  },
+  "adminCats": {
+    "title": "Categories",
+    "intro": "The categories students see when posting and browsing.",
+    "addTitle": "New category",
+    "nameEs": "Spanish name",
+    "nameEn": "English name",
+    "slugPh": "slug (optional)",
+    "add": "Add",
+    "save": "Save",
+    "delete": "Delete",
+    "order": "Order",
+    "used": "{count} listings",
+    "inUse": "A category that still has listings cannot be deleted."
   }
 }

@@ -24,7 +24,7 @@ export default async function AdminAdsPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      <AdminNav />
+      <AdminNav current="/admin/ads" />
       <h1 className="text-xl font-bold mb-6">{t("title")}</h1>
 
       {/* Create form (client component: validates and reports errors inline) */}

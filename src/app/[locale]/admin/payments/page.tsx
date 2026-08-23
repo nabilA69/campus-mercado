@@ -28,7 +28,7 @@ export default async function AdminPaymentsPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      <AdminNav />
+      <AdminNav current="/admin/payments" />
       <h1 className="text-xl font-bold mb-6">{t("title")}</h1>
 
       {payments.length === 0 ? (

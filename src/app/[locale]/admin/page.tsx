@@ -1,128 +1,147 @@
+import { connection } from "next/server";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { reviewVerificationAction } from "@/lib/actions/verification";
+import { Link } from "@/i18n/navigation";
 import AdminNav from "@/components/AdminNav";
 
-export default async function AdminPage({
+/** Admin home: the numbers that matter, and anything waiting on a decision. */
+export default async function AdminDashboard({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  await connection();
   setRequestLocale(locale);
-  const t = await getTranslations("admin");
+  const t = await getTranslations("adminDash");
 
   const user = await getCurrentUser();
   if (!user) redirect(`/${locale}/login`);
   if (user!.role !== "admin") redirect(`/${locale}`);
 
-  const pending = await prisma.studentVerification.findMany({
-    where: { status: "pending" },
-    orderBy: { createdAt: "asc" },
-  });
-  const userIds = pending.map((p) => p.userId);
-  const users = await prisma.user.findMany({
-    where: { id: { in: userIds } },
-  });
-  const userById = new Map(users.map((u) => [u.id, u]));
+  const now = new Date();
+  const [
+    users,
+    verifiedUsers,
+    listings,
+    activeListings,
+    pendingVerifications,
+    pendingPayments,
+    openReports,
+    activeAds,
+    activeBoosts,
+    confirmedPayments,
+  ] = await Promise.all([
+    prisma.user.count(),
+    prisma.user.count({ where: { verificationStatus: "approved" } }),
+    prisma.listing.count(),
+    prisma.listing.count({ where: { status: "active" } }),
+    prisma.studentVerification.count({ where: { status: "pending" } }),
+    prisma.payment.count({ where: { status: "pending" } }),
+    prisma.report.count({ where: { status: "open" } }),
+    prisma.adSlot.count({ where: { active: true } }),
+    prisma.featuredBoost.count({
+      where: { status: "active", expiresAt: { gt: now } },
+    }),
+    prisma.payment.findMany({ where: { status: "confirmed" } }),
+  ]);
+
+  // Revenue collected, grouped by currency (boosts + ad sales).
+  const revenue = confirmedPayments.reduce<Record<string, number>>((acc, p) => {
+    acc[p.currency] = (acc[p.currency] ?? 0) + p.amount;
+    return acc;
+  }, {});
+
+  const stats = [
+    { label: t("users"), value: users, href: "/admin/users" as const },
+    { label: t("verified"), value: verifiedUsers, href: "/admin/users" as const },
+    { label: t("listings"), value: listings, href: "/admin/listings" as const },
+    { label: t("active"), value: activeListings, href: "/admin/listings" as const },
+    { label: t("boosted"), value: activeBoosts, href: "/admin/listings" as const },
+    { label: t("activeAds"), value: activeAds, href: "/admin/ads" as const },
+  ];
+
+  const todo = [
+    {
+      label: t("pendingVerifications"),
+      value: pendingVerifications,
+      href: "/admin/verifications" as const,
+    },
+    {
+      label: t("pendingPayments"),
+      value: pendingPayments,
+      href: "/admin/payments" as const,
+    },
+    { label: t("openReports"), value: openReports, href: "/admin/reports" as const },
+  ];
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
-      <AdminNav />
-      <h1 className="text-xl font-bold mb-1">{t("title")}</h1>
-      <h2 className="text-sm text-gray-500 mb-6">{t("verifications")}</h2>
+    <div className="mx-auto max-w-4xl px-4 py-10">
+      <AdminNav current="/admin" />
+      <h1 className="mb-1 text-xl font-bold">{t("title")}</h1>
+      <p className="mb-6 text-sm text-gray-500">{t("signedInAs", { email: user!.email })}</p>
 
-      {pending.length === 0 ? (
-        <p className="rounded-lg bg-white border border-gray-200 p-6 text-center text-gray-400">
-          {t("none")}
-        </p>
-      ) : (
-        <ul className="space-y-4">
-          {pending.map((v) => {
-            const u = userById.get(v.userId);
-            return (
-              <li
-                key={v.id}
-                className="rounded-lg bg-white border border-gray-200 p-4 flex flex-col sm:flex-row gap-4"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={v.idCardImageUrl}
-                  alt="ID card"
-                  className="w-full sm:w-40 h-40 object-cover rounded-md border"
-                />
-                <div className="flex-1">
-                  <p className="font-medium">{u?.name}</p>
-                  <p className="text-sm text-gray-500">{u?.email}</p>
-                  <p className="text-sm mt-2">
-                    <span className="text-gray-500">No. CI:</span>{" "}
-                    <span className="font-mono tracking-wider">
-                      {v.ciNumber ?? "—"}
-                    </span>
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    DOB:{" "}
-                    {u?.dateOfBirth
-                      ? u.dateOfBirth.toISOString().slice(0, 10)
-                      : "—"}{" "}
-                    {v.ciAutoMatch && (
-                      <span className="text-green-600 font-medium">
-                        ✓ CI↔DOB auto-match
-                      </span>
-                    )}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {t("submitted")}: {v.createdAt.toLocaleString()}
-                  </p>
+      {/* Needs attention */}
+      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+        {t("needsAttention")}
+      </h2>
+      <div className="mb-8 grid gap-3 sm:grid-cols-3">
+        {todo.map((s) => (
+          <Link
+            key={s.label}
+            href={s.href}
+            className={`rounded-lg border p-4 transition ${
+              s.value > 0
+                ? "border-amber-300 bg-amber-50 hover:border-amber-400"
+                : "border-gray-200 bg-white hover:border-brand"
+            }`}
+          >
+            <p className="text-2xl font-extrabold text-navy">{s.value}</p>
+            <p className="text-sm text-gray-600">{s.label}</p>
+          </Link>
+        ))}
+      </div>
 
-                  <div className="mt-4 rounded-md bg-gray-50 border border-gray-200 p-3">
-                    <p className="text-xs font-semibold text-gray-600 mb-2">
-                      {t("checklistTitle")}
-                    </p>
-                    {/* Approve requires the admin to confirm both factors. */}
-                    <form action={reviewVerificationAction} className="space-y-2">
-                      <input type="hidden" name="locale" value={locale} />
-                      <input type="hidden" name="verificationId" value={v.id} />
-                      <input type="hidden" name="decision" value="approve" />
-                      <label className="flex items-start gap-2 text-xs text-gray-700">
-                        <input
-                          type="checkbox"
-                          name="confirmCard"
-                          required
-                          className="mt-0.5"
-                        />
-                        <span>{t("confirmCard")}</span>
-                      </label>
-                      <label className="flex items-start gap-2 text-xs text-gray-700">
-                        <input
-                          type="checkbox"
-                          name="confirmCi"
-                          required
-                          className="mt-0.5"
-                        />
-                        <span>{t("confirmCi")}</span>
-                      </label>
-                      <button className="mt-1 rounded-md bg-green-600 px-3 py-1.5 text-white text-sm font-medium hover:bg-green-700">
-                        {t("approve")}
-                      </button>
-                    </form>
-                    <form action={reviewVerificationAction} className="mt-2">
-                      <input type="hidden" name="locale" value={locale} />
-                      <input type="hidden" name="verificationId" value={v.id} />
-                      <input type="hidden" name="decision" value="reject" />
-                      <button className="rounded-md bg-red-600 px-3 py-1.5 text-white text-sm font-medium hover:bg-red-700">
-                        {t("reject")}
-                      </button>
-                    </form>
-                  </div>
-                </div>
+      {/* Site numbers */}
+      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+        {t("overview")}
+      </h2>
+      <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        {stats.map((s) => (
+          <Link
+            key={s.label}
+            href={s.href}
+            className="rounded-lg border border-gray-200 bg-white p-4 transition hover:border-brand"
+          >
+            <p className="text-2xl font-extrabold text-navy">{s.value}</p>
+            <p className="text-sm text-gray-600">{s.label}</p>
+          </Link>
+        ))}
+      </div>
+
+      {/* Money */}
+      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
+        {t("revenue")}
+      </h2>
+      <div className="rounded-lg border border-gray-200 bg-white p-4">
+        {Object.keys(revenue).length === 0 ? (
+          <p className="text-sm text-gray-400">{t("noRevenue")}</p>
+        ) : (
+          <ul className="flex flex-wrap gap-6">
+            {Object.entries(revenue).map(([currency, amount]) => (
+              <li key={currency}>
+                <span className="text-2xl font-extrabold text-brand">
+                  {amount.toLocaleString("es")}
+                </span>{" "}
+                <span className="text-sm font-medium text-gray-500">{currency}</span>
               </li>
-            );
-          })}
-        </ul>
-      )}
+            ))}
+          </ul>
+        )}
+        <p className="mt-2 text-xs text-gray-400">{t("revenueNote")}</p>
+      </div>
     </div>
   );
 }

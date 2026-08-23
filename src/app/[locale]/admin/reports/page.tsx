@@ -45,7 +45,7 @@ export default async function AdminReportsPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      <AdminNav />
+      <AdminNav current="/admin/reports" />
       <h1 className="text-xl font-bold mb-6">{t("title")}</h1>
 
       {groups.size === 0 ? (

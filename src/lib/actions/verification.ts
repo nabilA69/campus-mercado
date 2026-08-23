@@ -132,5 +132,5 @@ export async function reviewVerificationAction(formData: FormData) {
     data: { verificationStatus: newStatus },
   });
 
-  revalidatePath(`/${locale}/admin`);
+  revalidatePath(`/${locale}/admin/verifications`);
 }

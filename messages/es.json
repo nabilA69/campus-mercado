@@ -211,10 +211,14 @@
     "rejected": "El pago fue rechazado. Contáctanos si crees que es un error."
   },
   "adminNav": {
+    "dashboard": "Panel",
     "verifications": "Verificaciones",
+    "users": "Usuarios",
+    "listings": "Anuncios",
     "payments": "Pagos",
     "reports": "Reportes",
-    "ads": "Publicidad"
+    "ads": "Publicidad",
+    "categories": "Categorías"
   },
   "report": {
     "report": "Reportar anuncio",
@@ -336,5 +340,98 @@
     "label": "Forma de ver",
     "list": "Ver en lista",
     "grid": "Ver con fotos"
+  },
+  "adminDash": {
+    "title": "Panel de administración",
+    "signedInAs": "Sesión iniciada como {email}",
+    "needsAttention": "Requiere atención",
+    "overview": "Resumen del sitio",
+    "revenue": "Ingresos cobrados",
+    "users": "Usuarios",
+    "verified": "Verificados",
+    "listings": "Anuncios totales",
+    "active": "Anuncios activos",
+    "boosted": "Destacados activos",
+    "activeAds": "Banners activos",
+    "pendingVerifications": "Verificaciones pendientes",
+    "pendingPayments": "Pagos por confirmar",
+    "openReports": "Reportes abiertos",
+    "noRevenue": "Todavía no hay pagos confirmados.",
+    "revenueNote": "Suma de los pagos confirmados por destacados y publicidad."
+  },
+  "adminUsers": {
+    "title": "Usuarios",
+    "searchPh": "Buscar por nombre o correo…",
+    "search": "Buscar",
+    "none": "No se encontraron usuarios.",
+    "you": "tú",
+    "joined": "Registrado",
+    "ads": "Anuncios",
+    "dob": "Nacimiento",
+    "apply": "Aplicar",
+    "makeAdmin": "Hacer admin",
+    "makeStudent": "Quitar admin",
+    "delete": "Eliminar usuario",
+    "confirmDelete": "Sí, eliminar definitivamente",
+    "deleteWarning": "También borra sus anuncios y pagos.",
+    "status": {
+      "unverified": "Sin verificar",
+      "pending": "Pendiente",
+      "approved": "Verificado",
+      "rejected": "Rechazado"
+    }
+  },
+  "adminListings": {
+    "title": "Anuncios",
+    "searchPh": "Buscar por título o descripción…",
+    "search": "Buscar",
+    "all": "Todos",
+    "none": "No se encontraron anuncios.",
+    "apply": "Aplicar",
+    "feature": "Destacar",
+    "unfeature": "Quitar destacado",
+    "delete": "Eliminar",
+    "confirmDelete": "Sí, eliminar anuncio",
+    "statusLabel": {
+      "active": "Activo",
+      "hidden": "Oculto",
+      "sold": "Vendido"
+    },
+    "edit": "Editar"
+  },
+  "adminEdit": {
+    "title": "Editar anuncio",
+    "back": "Volver a anuncios",
+    "saved": "Cambios guardados.",
+    "required": "El título, la descripción y el contacto son obligatorios.",
+    "fTitle": "Título",
+    "fDescription": "Descripción",
+    "fPrice": "Precio",
+    "fCurrency": "Moneda",
+    "fCategory": "Categoría",
+    "fProvince": "Provincia",
+    "fCampus": "Universidad / facultad",
+    "fContactMethod": "Método de contacto",
+    "fContactValue": "Teléfono o correo",
+    "phone": "Teléfono",
+    "email": "Correo",
+    "save": "Guardar cambios",
+    "photos": "Fotos",
+    "noPhotos": "Este anuncio no tiene fotos.",
+    "removePhoto": "Quitar"
+  },
+  "adminCats": {
+    "title": "Categorías",
+    "intro": "Las categorías que ven los estudiantes al publicar y al buscar.",
+    "addTitle": "Nueva categoría",
+    "nameEs": "Nombre en español",
+    "nameEn": "Nombre en inglés",
+    "slugPh": "slug (opcional)",
+    "add": "Añadir",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "order": "Orden",
+    "used": "{count} anuncios",
+    "inUse": "No se puede eliminar una categoría que todavía tiene anuncios."
   }
 }

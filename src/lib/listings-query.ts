@@ -22,10 +22,13 @@ export async function fetchListingsFeaturedFirst(
 
   const include = { images: { orderBy: { sortOrder: "asc" as const }, take: 1 } };
 
+  // AND the caller's filter with the boost partition instead of spreading it:
+  // a spread would let our `id` key overwrite an `id` the caller already set
+  // (e.g. "not this listing" on the similar-products row).
   const featured =
     boostedList.length > 0
       ? await prisma.listing.findMany({
-          where: { ...where, id: { in: boostedList } },
+          where: { AND: [where, { id: { in: boostedList } }] },
           orderBy: { createdAt: "desc" },
           take,
           include,
@@ -33,7 +36,7 @@ export async function fetchListingsFeaturedFirst(
       : [];
 
   const rest = await prisma.listing.findMany({
-    where: { ...where, id: { notIn: boostedList } },
+    where: { AND: [where, { id: { notIn: boostedList } }] },
     orderBy: { createdAt: "desc" },
     take,
     include,

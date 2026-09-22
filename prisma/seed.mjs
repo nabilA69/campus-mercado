@@ -27,9 +27,21 @@ async function main() {
   }
   console.log(`Seeded ${CATEGORY_SEED.length} categories.`);
 
-  // Admin user
-  const adminEmail = process.env.ADMIN_EMAIL ?? "admin@campusmercado.cu";
-  const adminPassword = process.env.ADMIN_PASSWORD ?? "changeme123";
+  // Admin user. No default credentials on purpose: a hardcoded password here
+  // is a published password the moment the repo is public, and seeds get run
+  // against production. Both values must be supplied explicitly.
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminEmail || !adminPassword) {
+    console.log(
+      "Skipping admin user: set ADMIN_EMAIL and ADMIN_PASSWORD to create one, e.g.\n" +
+        '  ADMIN_EMAIL=you@example.com ADMIN_PASSWORD="$(openssl rand -base64 24)" npm run db:seed',
+    );
+    return;
+  }
+  if (adminPassword.length < 12) {
+    throw new Error("ADMIN_PASSWORD must be at least 12 characters.");
+  }
   const passwordHash = await bcrypt.hash(adminPassword, 10);
   await prisma.user.upsert({
     where: { email: adminEmail },

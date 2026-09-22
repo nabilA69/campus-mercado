@@ -379,7 +379,12 @@
       "pending": "Pendiente",
       "approved": "Verificado",
       "rejected": "Rechazado"
-    }
+    },
+    "resetPw": "Cambiar contraseña",
+    "newPwPh": "Nueva contraseña",
+    "setPw": "Guardar",
+    "pwChanged": "Contraseña actualizada.",
+    "pwTooShort": "La contraseña debe tener al menos 8 caracteres."
   },
   "adminListings": {
     "title": "Anuncios",
@@ -433,5 +438,21 @@
     "order": "Orden",
     "used": "Anuncios: {count}",
     "inUse": "No se puede eliminar una categoría que todavía tiene anuncios."
+  },
+  "password": {
+    "title": "Contraseña",
+    "intro": "Cambia tu contraseña. Mínimo 8 caracteres.",
+    "current": "Contraseña actual",
+    "new": "Nueva contraseña",
+    "confirm": "Repite la nueva contraseña",
+    "save": "Cambiar contraseña",
+    "saving": "Guardando…",
+    "changed": "Contraseña actualizada.",
+    "err": {
+      "wrongCurrent": "La contraseña actual no es correcta.",
+      "tooShort": "La nueva contraseña debe tener al menos 8 caracteres.",
+      "mismatch": "Las dos contraseñas no coinciden.",
+      "sameAsOld": "La nueva contraseña es igual a la actual."
+    }
   }
 }

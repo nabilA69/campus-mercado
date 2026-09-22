@@ -379,7 +379,12 @@
       "pending": "Pending",
       "approved": "Verified",
       "rejected": "Rejected"
-    }
+    },
+    "resetPw": "Change password",
+    "newPwPh": "New password",
+    "setPw": "Save",
+    "pwChanged": "Password updated.",
+    "pwTooShort": "The password must be at least 8 characters."
   },
   "adminListings": {
     "title": "Listings",
@@ -433,5 +438,21 @@
     "order": "Order",
     "used": "Listings: {count}",
     "inUse": "A category that still has listings cannot be deleted."
+  },
+  "password": {
+    "title": "Password",
+    "intro": "Change your password. Minimum 8 characters.",
+    "current": "Current password",
+    "new": "New password",
+    "confirm": "Repeat new password",
+    "save": "Change password",
+    "saving": "Saving…",
+    "changed": "Password updated.",
+    "err": {
+      "wrongCurrent": "That is not your current password.",
+      "tooShort": "The new password must be at least 8 characters.",
+      "mismatch": "The two passwords do not match.",
+      "sameAsOld": "The new password is the same as the current one."
+    }
   }
 }

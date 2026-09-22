@@ -8,6 +8,7 @@ import {
   verifyPassword,
   createSession,
   destroySession,
+  getCurrentUser,
 } from "@/lib/auth";
 import { parseDobInput } from "@/lib/ci";
 
@@ -86,4 +87,42 @@ export async function logoutAction(formData: FormData) {
   const locale = (formData.get("locale") as string) || "es";
   await destroySession();
   redirect(`/${locale}`);
+}
+
+export type PasswordState = { error?: string; success?: boolean };
+
+/**
+ * Change your own password. Requires the current one, so a stolen session
+ * alone cannot lock the real owner out of their account.
+ */
+export async function changePasswordAction(
+  _prev: PasswordState,
+  formData: FormData,
+): Promise<PasswordState> {
+  const locale = (formData.get("locale") as string) || "es";
+  const me = await getCurrentUser();
+  if (!me) redirect(`/${locale}/login`);
+
+  const current = (formData.get("currentPassword") as string) || "";
+  const next = (formData.get("newPassword") as string) || "";
+  const confirm = (formData.get("confirmPassword") as string) || "";
+
+  if (next.length < 8) return { error: "tooShort" };
+  if (next !== confirm) return { error: "mismatch" };
+
+  // Re-read with the hash: getCurrentUser deliberately strips it.
+  const row = await prisma.user.findUnique({
+    where: { id: me!.id },
+    select: { passwordHash: true },
+  });
+  if (!row || !(await verifyPassword(current, row.passwordHash))) {
+    return { error: "wrongCurrent" };
+  }
+  if (await verifyPassword(next, row.passwordHash)) return { error: "sameAsOld" };
+
+  await prisma.user.update({
+    where: { id: me!.id },
+    data: { passwordHash: await hashPassword(next) },
+  });
+  return { success: true };
 }

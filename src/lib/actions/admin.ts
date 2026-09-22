@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentUser, hashPassword } from "@/lib/auth";
 import { BOOST_TIERS, isBoostTier } from "@/lib/boosts";
 import { saveImage, isAllowedImage } from "@/lib/storage";
 import { normalizeUrl, isAdPosition } from "@/lib/urls";
@@ -418,4 +418,25 @@ export async function deleteCategoryAction(formData: FormData) {
   }
   await prisma.category.delete({ where: { id } });
   revalidatePath(`/${locale}/admin/categories`);
+}
+
+/**
+ * Set another user's password. The escape hatch for an account whose password
+ * is known-compromised (e.g. the seeded default admin) or simply lost.
+ */
+export async function adminResetPasswordAction(formData: FormData) {
+  const locale = (formData.get("locale") as string) || "es";
+  await requireAdmin(locale);
+  const userId = formData.get("userId") as string;
+  const password = (formData.get("password") as string) || "";
+  if (password.length < 8) {
+    redirect(`/${locale}/admin/users?pwError=1`);
+  }
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { passwordHash: await hashPassword(password) },
+  });
+  revalidatePath(`/${locale}/admin/users`);
+  redirect(`/${locale}/admin/users?pwOk=1`);
 }

@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { getCurrentUser } from "@/lib/auth";
+import ChangePasswordForm from "@/components/ChangePasswordForm";
 
 const STATUS_KEY: Record<string, string> = {
   unverified: "statusUnverified",
@@ -26,6 +27,7 @@ export default async function AccountPage({
   setRequestLocale(locale);
   const t = await getTranslations("account");
   const tm = await getTranslations("myListings");
+  const tp = await getTranslations("password");
 
   const user = await getCurrentUser();
   if (!user) redirect(`/${locale}/login`);
@@ -79,6 +81,13 @@ export default async function AccountPage({
         >
           {tm("title")}
         </Link>
+      </div>
+
+      {/* Password */}
+      <div className="mt-8 rounded-lg border border-gray-200 bg-white p-5">
+        <h2 className="mb-1 font-semibold">{tp("title")}</h2>
+        <p className="mb-4 text-sm text-gray-500">{tp("intro")}</p>
+        <ChangePasswordForm locale={locale} />
       </div>
     </div>
   );

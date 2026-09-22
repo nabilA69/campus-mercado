@@ -8,6 +8,7 @@ import {
   setUserRoleAction,
   setUserVerificationAction,
   deleteUserAction,
+  adminResetPasswordAction,
 } from "@/lib/actions/admin";
 
 const STATUS_STYLE: Record<string, string> = {
@@ -22,10 +23,10 @@ export default async function AdminUsersPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; pwOk?: string; pwError?: string }>;
 }) {
   const { locale } = await params;
-  const { q } = await searchParams;
+  const { q, pwOk, pwError } = await searchParams;
   await connection();
   setRequestLocale(locale);
   const t = await getTranslations("adminUsers");
@@ -65,6 +66,17 @@ export default async function AdminUsersPage({
           {t("search")}
         </button>
       </form>
+
+      {pwOk && (
+        <p className="mb-4 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-800">
+          {t("pwChanged")}
+        </p>
+      )}
+      {pwError && (
+        <p className="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          {t("pwTooShort")}
+        </p>
+      )}
 
       {users.length === 0 ? (
         <p className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-400">
@@ -141,6 +153,27 @@ export default async function AdminUsersPage({
                       </button>
                     </form>
                   )}
+
+                  {/* reset this user's password */}
+                  <details>
+                    <summary className="cursor-pointer select-none text-sm text-gray-400 hover:text-brand">
+                      {t("resetPw")}
+                    </summary>
+                    <form action={adminResetPasswordAction} className="mt-2 flex gap-2">
+                      <input type="hidden" name="locale" value={locale} />
+                      <input type="hidden" name="userId" value={u.id} />
+                      <input
+                        name="password"
+                        type="password"
+                        autoComplete="new-password"
+                        placeholder={t("newPwPh")}
+                        className="h-9 rounded-md border border-gray-300 px-2 text-sm"
+                      />
+                      <button className="h-9 rounded-md border border-brand px-3 text-sm font-medium text-brand hover:bg-brand hover:text-white">
+                        {t("setPw")}
+                      </button>
+                    </form>
+                  </details>
 
                   {/* delete, behind a reveal */}
                   {!isMe && (

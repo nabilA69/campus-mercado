@@ -47,7 +47,9 @@ export default async function CategorySidebar({
         <h2 className="border-b border-gray-200 px-3 py-2 text-xs font-bold uppercase tracking-wide text-gray-500">
           {ts("browseProvinces")}
         </h2>
-        <ul className="max-h-72 overflow-y-auto">
+        {/* All 16 show: a scroll box cut the list at Ciego de Ávila, which
+            reads as "the east of the country is not covered". */}
+        <ul>
           {PROVINCES.map((p) => (
             <li key={p.slug}>
               <Link

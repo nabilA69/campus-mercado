@@ -49,7 +49,8 @@
       "dobRequired": "Please enter your date of birth.",
       "dobInvalid": "Invalid date of birth.",
       "required": "This field is required."
-    }
+    },
+    "forgotPassword": "Forgot your password?"
   },
   "account": {
     "title": "My account",
@@ -170,7 +171,8 @@
     "delete": "Delete",
     "confirmDelete": "Yes, delete",
     "sold": "Sold",
-    "hidden": "Hidden"
+    "hidden": "Hidden",
+    "edit": "Edit"
   },
   "boost": {
     "title": "Boost your ad",
@@ -357,7 +359,8 @@
     "pendingPayments": "Payments to confirm",
     "openReports": "Open reports",
     "noRevenue": "No confirmed payments yet.",
-    "revenueNote": "Total of confirmed boost and advertising payments."
+    "revenueNote": "Total of confirmed boost and advertising payments.",
+    "pendingResets": "Password requests"
   },
   "adminUsers": {
     "title": "Users",
@@ -384,7 +387,10 @@
     "newPwPh": "New password",
     "setPw": "Save",
     "pwChanged": "Password updated.",
-    "pwTooShort": "The password must be at least 8 characters."
+    "pwTooShort": "The password must be at least 8 characters.",
+    "resetQueue": "Password requests",
+    "resetQueueEmpty": "No pending requests.",
+    "requested": "Asked for a new password"
   },
   "adminListings": {
     "title": "Listings",
@@ -454,5 +460,28 @@
       "mismatch": "The two passwords do not match.",
       "sameAsOld": "The new password is the same as the current one."
     }
+  },
+  "editListing": {
+    "title": "Edit listing",
+    "back": "Back to my listings",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "photos": "Current photos",
+    "removePhoto": "Remove",
+    "addPhotos": "Add photos ({count} left)"
+  },
+  "forgot": {
+    "title": "Recover password",
+    "intro": "Enter your email and an admin will set a new password and pass it on to you.",
+    "email": "Email",
+    "submit": "Send request",
+    "sending": "Sending…",
+    "sent": "Request received. If that email has an account, an admin will review it and contact you with a new password.",
+    "invalid": "Enter a valid email.",
+    "backToLogin": "Back to sign in"
+  },
+  "pager": {
+    "prev": "Previous",
+    "next": "Next"
   }
 }

@@ -5,7 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import ListingCard from "@/components/ListingCard";
 import SearchBar from "@/components/SearchBar";
-import { fetchListingsFeaturedFirst } from "@/lib/listings-query";
+import { fetchListingsPage } from "@/lib/listings-query";
+import Pager from "@/components/Pager";
 import { isProvinceSlug, provinceName, PROVINCES } from "@/lib/provinces";
 
 export default async function SearchPage({
@@ -13,7 +14,12 @@ export default async function SearchPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ q?: string; province?: string; category?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    province?: string;
+    category?: string;
+    page?: string;
+  }>;
 }) {
   const { locale } = await params;
   const sp = await searchParams;
@@ -47,7 +53,8 @@ export default async function SearchPage({
       : {}),
   };
 
-  const cards = await fetchListingsFeaturedFirst(where, 48);
+  const feed = await fetchListingsPage(where, Number(sp.page) || 1);
+  const cards = feed.cards;
 
   // Build a link that keeps the other filters intact. next-intl's Link needs the
   // object form for query params — a "/search?x=y" string is not a valid href.
@@ -135,7 +142,7 @@ export default async function SearchPage({
       </div>
 
       <h1 className="mt-6 text-lg font-bold">
-        {t("resultsCount", { count: cards.length })}
+        {t("resultsCount", { count: feed.total })}
       </h1>
 
       {cards.length > 0 ? (
@@ -157,6 +164,17 @@ export default async function SearchPage({
           )}
         </div>
       )}
+
+      <Pager
+        base="/search"
+        query={{
+          ...(q ? { q } : {}),
+          ...(province ? { province } : {}),
+          ...(categorySlug ? { category: categorySlug } : {}),
+        }}
+        page={feed.page}
+        totalPages={feed.totalPages}
+      />
 
       {/* browse by province */}
       <h2 className="mt-10 mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500">

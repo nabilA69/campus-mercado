@@ -3,7 +3,8 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ListingCard from "@/components/ListingCard";
-import { fetchListingsFeaturedFirst } from "@/lib/listings-query";
+import { fetchListingsPage } from "@/lib/listings-query";
+import Pager from "@/components/Pager";
 
 // Category page: lists active listings in the category, with a text search.
 export default async function CategoryPage({
@@ -11,10 +12,10 @@ export default async function CategoryPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; slug: string }>;
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; page?: string }>;
 }) {
   const { locale, slug } = await params;
-  const { q } = await searchParams;
+  const { q, page } = await searchParams;
   await connection();
   setRequestLocale(locale);
   const t = await getTranslations("home");
@@ -23,21 +24,22 @@ export default async function CategoryPage({
   if (!category) notFound();
 
   const query = (q ?? "").trim();
-  const cards = await fetchListingsFeaturedFirst(
+  const feed = await fetchListingsPage(
     {
       categoryId: category.id,
       status: "active",
       ...(query
         ? {
             OR: [
-              { title: { contains: query } },
-              { description: { contains: query } },
+              { title: { contains: query, mode: "insensitive" } },
+              { description: { contains: query, mode: "insensitive" } },
             ],
           }
         : {}),
     },
-    40,
+    Number(page) || 1,
   );
+  const cards = feed.cards;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
@@ -70,6 +72,13 @@ export default async function CategoryPage({
           {t("noListings")}
         </div>
       )}
+
+      <Pager
+        base={`/c/${slug}`}
+        query={query ? { q: query } : {}}
+        page={feed.page}
+        totalPages={feed.totalPages}
+      />
     </div>
   );
 }

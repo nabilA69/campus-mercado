@@ -12,17 +12,21 @@ import Recommended3D from "@/components/Recommended3D";
 import AdBanner from "@/components/AdBanner";
 import SearchBar from "@/components/SearchBar";
 import CategoryDropdown from "@/components/CategoryDropdown";
-import { fetchListingsFeaturedFirst } from "@/lib/listings-query";
+import {
+  fetchListingsFeaturedFirst,
+  fetchListingsPage,
+} from "@/lib/listings-query";
+import Pager from "@/components/Pager";
 
 export default async function HomePage({
   params,
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ view?: string }>;
+  searchParams: Promise<{ view?: string; page?: string }>;
 }) {
   const { locale } = await params;
-  const { view: viewParam } = await searchParams;
+  const { view: viewParam, page: pageParam } = await searchParams;
   // Render fresh each request so new posts, boosts and moderation appear immediately.
   await connection();
   setRequestLocale(locale);
@@ -36,7 +40,11 @@ export default async function HomePage({
     CATEGORY_SEED.find((c) => c.slug === slug)?.icon ?? "📦";
 
   // Recent active listings (boosted ones surface first, then newest).
-  const cards = await fetchListingsFeaturedFirst({ status: "active" }, 40);
+  const feed = await fetchListingsPage(
+    { status: "active" },
+    Number(pageParam) || 1,
+  );
+  const cards = feed.cards;
 
   // Personalized recommendations from the categories this visitor browses most
   // (stored in the cm_interests cookie by InterestTracker on listing pages).
@@ -147,6 +155,13 @@ export default async function HomePage({
               {t("noListings")}
             </div>
           )}
+
+          <Pager
+            base="/"
+            query={viewParam ? { view: viewParam } : {}}
+            page={feed.page}
+            totalPages={feed.totalPages}
+          />
         </main>
       </div>
     </div>

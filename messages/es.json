@@ -49,7 +49,8 @@
       "dobRequired": "Debes indicar tu fecha de nacimiento.",
       "dobInvalid": "Fecha de nacimiento inválida.",
       "required": "Campo obligatorio."
-    }
+    },
+    "forgotPassword": "¿Olvidaste tu contraseña?"
   },
   "account": {
     "title": "Mi cuenta",
@@ -170,7 +171,8 @@
     "delete": "Eliminar",
     "confirmDelete": "Sí, eliminar",
     "sold": "Vendido",
-    "hidden": "Oculto"
+    "hidden": "Oculto",
+    "edit": "Editar"
   },
   "boost": {
     "title": "Destacar tu anuncio",
@@ -357,7 +359,8 @@
     "pendingPayments": "Pagos por confirmar",
     "openReports": "Reportes abiertos",
     "noRevenue": "Todavía no hay pagos confirmados.",
-    "revenueNote": "Suma de los pagos confirmados por destacados y publicidad."
+    "revenueNote": "Suma de los pagos confirmados por destacados y publicidad.",
+    "pendingResets": "Contraseñas solicitadas"
   },
   "adminUsers": {
     "title": "Usuarios",
@@ -384,7 +387,10 @@
     "newPwPh": "Nueva contraseña",
     "setPw": "Guardar",
     "pwChanged": "Contraseña actualizada.",
-    "pwTooShort": "La contraseña debe tener al menos 8 caracteres."
+    "pwTooShort": "La contraseña debe tener al menos 8 caracteres.",
+    "resetQueue": "Solicitudes de contraseña",
+    "resetQueueEmpty": "No hay solicitudes pendientes.",
+    "requested": "Pidió una contraseña nueva"
   },
   "adminListings": {
     "title": "Anuncios",
@@ -454,5 +460,28 @@
       "mismatch": "Las dos contraseñas no coinciden.",
       "sameAsOld": "La nueva contraseña es igual a la actual."
     }
+  },
+  "editListing": {
+    "title": "Editar anuncio",
+    "back": "Volver a mis anuncios",
+    "save": "Guardar cambios",
+    "saving": "Guardando…",
+    "photos": "Fotos actuales",
+    "removePhoto": "Quitar",
+    "addPhotos": "Añadir fotos (quedan {count})"
+  },
+  "forgot": {
+    "title": "Recuperar contraseña",
+    "intro": "Escribe tu correo y un administrador te asignará una contraseña nueva y te la hará llegar.",
+    "email": "Correo electrónico",
+    "submit": "Enviar solicitud",
+    "sending": "Enviando…",
+    "sent": "Solicitud recibida. Si ese correo tiene una cuenta, un administrador la revisará y te contactará con una contraseña nueva.",
+    "invalid": "Escribe un correo válido.",
+    "backToLogin": "Volver a entrar"
+  },
+  "pager": {
+    "prev": "Anterior",
+    "next": "Siguiente"
   }
 }

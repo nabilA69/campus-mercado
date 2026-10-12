@@ -125,6 +125,15 @@ export default async function MyListingsPage({
                     </form>
                   </div>
 
+                  {/* Editing stays available whatever the listing's state: a
+                      sold or boosted ad still needs its typos fixed. */}
+                  <Link
+                    href={`/listing/${l.id}/edit`}
+                    className="rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:border-brand hover:text-brand"
+                  >
+                    {t("edit")}
+                  </Link>
+
                   {!activeBoost && l.status === "active" && (
                     <Link
                       href={`/listing/${l.id}/boost`}

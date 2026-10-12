@@ -144,3 +144,102 @@ export async function deleteListingAction(formData: FormData) {
   }
   redirect(`/${locale}/account/listings`);
 }
+
+/**
+ * Owner edits their own listing. Same validation as posting, minus the images:
+ * photos are added and removed separately so a text fix never risks them.
+ */
+export async function updateListingAction(
+  _prev: ListingState,
+  formData: FormData,
+): Promise<ListingState> {
+  const locale = (formData.get("locale") as string) || "es";
+  const listingId = formData.get("listingId") as string;
+
+  const user = await getCurrentUser();
+  if (!user) redirect(`/${locale}/login`);
+
+  const existing = await prisma.listing.findUnique({ where: { id: listingId } });
+  // Same answer whether it is missing or someone else's: don't confirm it exists.
+  if (!existing || existing.sellerId !== user!.id) {
+    redirect(`/${locale}/account/listings`);
+  }
+
+  const parsed = schema.safeParse({
+    title: formData.get("title"),
+    description: formData.get("description"),
+    price: formData.get("price"),
+    currency: formData.get("currency"),
+    categoryId: formData.get("categoryId"),
+    province: formData.get("province") || undefined,
+    university: formData.get("university") || undefined,
+    universityOther: formData.get("universityOther") || undefined,
+    faculty: formData.get("faculty") || undefined,
+    contactMethod: formData.get("contactMethod"),
+    contactValue: formData.get("contactValue"),
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+
+  const category = await prisma.category.findUnique({
+    where: { id: parsed.data.categoryId },
+  });
+  if (!category) return { error: "categoryRequired" };
+
+  // New photos top up the existing set rather than replacing it.
+  const current = await prisma.listingImage.count({ where: { listingId } });
+  const files = (formData.getAll("images") as File[]).filter((f) => f && f.size > 0);
+  const room = Math.max(0, MAX_IMAGES - current);
+  const imageUrls: string[] = [];
+  for (const file of files.slice(0, room)) {
+    if (!isAllowedImage(file.type)) return { error: "imageType" };
+    try {
+      imageUrls.push(await saveImage(file, "listings"));
+    } catch (err) {
+      console.error("[listings] image upload failed:", err);
+      return { error: "storageUnavailable" };
+    }
+  }
+
+  await prisma.listing.update({
+    where: { id: listingId },
+    data: {
+      title: parsed.data.title,
+      description: parsed.data.description,
+      priceAmount: parsed.data.price,
+      currency: parsed.data.currency,
+      categoryId: parsed.data.categoryId,
+      province: isProvinceSlug(parsed.data.province) ? parsed.data.province : null,
+      campus: buildCampusLabel(parsed.data),
+      contactMethod: parsed.data.contactMethod,
+      contactValue: parsed.data.contactValue,
+      ...(imageUrls.length > 0
+        ? {
+            images: {
+              create: imageUrls.map((url, i) => ({ url, sortOrder: current + i })),
+            },
+          }
+        : {}),
+    },
+  });
+
+  redirect(`/${locale}/listing/${listingId}`);
+}
+
+/** Owner removes one photo from their own listing. */
+export async function deleteListingImageAction(formData: FormData) {
+  const locale = (formData.get("locale") as string) || "es";
+  const imageId = formData.get("imageId") as string;
+
+  const user = await getCurrentUser();
+  if (!user) redirect(`/${locale}/login`);
+
+  const image = await prisma.listingImage.findUnique({
+    where: { id: imageId },
+    include: { listing: { select: { id: true, sellerId: true } } },
+  });
+  if (image && image.listing.sellerId === user!.id) {
+    await prisma.listingImage.delete({ where: { id: imageId } });
+    redirect(`/${locale}/listing/${image.listing.id}/edit`);
+  }
+  redirect(`/${locale}/account/listings`);
+}

@@ -126,3 +126,29 @@ export async function changePasswordAction(
   });
   return { success: true };
 }
+
+export type ResetState = { sent?: boolean; error?: string };
+
+/**
+ * A student asks for a new password. Deliberately answers the same way whether
+ * or not the email is registered — otherwise this becomes a way to discover
+ * who has an account. One open request per user; asking twice is not an error.
+ */
+export async function requestPasswordResetAction(
+  _prev: ResetState,
+  formData: FormData,
+): Promise<ResetState> {
+  const email = ((formData.get("email") as string) || "").trim().toLowerCase();
+  if (!email.includes("@")) return { error: "emailInvalid" };
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (user) {
+    const open = await prisma.passwordResetRequest.findFirst({
+      where: { userId: user.id, status: "open" },
+    });
+    if (!open) {
+      await prisma.passwordResetRequest.create({ data: { userId: user.id } });
+    }
+  }
+  return { sent: true };
+}

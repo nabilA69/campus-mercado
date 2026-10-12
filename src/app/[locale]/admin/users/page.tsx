@@ -35,6 +35,15 @@ export default async function AdminUsersPage({
   if (!me) redirect(`/${locale}/login`);
   if (me!.role !== "admin") redirect(`/${locale}`);
 
+  // Open password requests: shown as a queue, and flagged on each row so the
+  // reset control sits right next to the person asking for it.
+  const openResets = await prisma.passwordResetRequest.findMany({
+    where: { status: "open" },
+    include: { user: { select: { id: true, name: true, email: true } } },
+    orderBy: { createdAt: "asc" },
+  });
+  const askedForReset = new Set(openResets.map((r) => r.user.id));
+
   const query = (q ?? "").trim();
   const users = await prisma.user.findMany({
     where: query
@@ -78,6 +87,21 @@ export default async function AdminUsersPage({
         </p>
       )}
 
+      {openResets.length > 0 && (
+        <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-4">
+          <p className="mb-2 text-sm font-semibold text-amber-900">
+            {t("resetQueue")} ({openResets.length})
+          </p>
+          <ul className="space-y-1 text-sm text-amber-900">
+            {openResets.map((r) => (
+              <li key={r.id}>
+                {r.user.name} — {r.user.email}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {users.length === 0 ? (
         <p className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-400">
           {t("none")}
@@ -110,11 +134,18 @@ export default async function AdminUsersPage({
                         : ""}
                     </p>
                   </div>
-                  <span
-                    className={`shrink-0 rounded px-2 py-1 text-xs font-semibold ${STATUS_STYLE[u.verificationStatus]}`}
-                  >
-                    {t(`status.${u.verificationStatus}`)}
-                  </span>
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    <span
+                      className={`rounded px-2 py-1 text-xs font-semibold ${STATUS_STYLE[u.verificationStatus]}`}
+                    >
+                      {t(`status.${u.verificationStatus}`)}
+                    </span>
+                    {askedForReset.has(u.id) && (
+                      <span className="rounded bg-amber-200 px-2 py-0.5 text-[11px] font-semibold text-amber-900">
+                        🔑 {t("requested")}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-gray-100 pt-3">

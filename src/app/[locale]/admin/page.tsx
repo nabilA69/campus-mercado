@@ -33,6 +33,7 @@ export default async function AdminDashboard({
     activeAds,
     activeBoosts,
     confirmedPayments,
+    pendingResets,
   ] = await Promise.all([
     prisma.user.count(),
     prisma.user.count({ where: { verificationStatus: "approved" } }),
@@ -46,6 +47,7 @@ export default async function AdminDashboard({
       where: { status: "active", expiresAt: { gt: now } },
     }),
     prisma.payment.findMany({ where: { status: "confirmed" } }),
+    prisma.passwordResetRequest.count({ where: { status: "open" } }),
   ]);
 
   // Revenue collected, grouped by currency (boosts + ad sales).
@@ -75,6 +77,11 @@ export default async function AdminDashboard({
       href: "/admin/payments" as const,
     },
     { label: t("openReports"), value: openReports, href: "/admin/reports" as const },
+    {
+      label: t("pendingResets"),
+      value: pendingResets,
+      href: "/admin/users" as const,
+    },
   ];
 
   return (
@@ -87,7 +94,7 @@ export default async function AdminDashboard({
       <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">
         {t("needsAttention")}
       </h2>
-      <div className="mb-8 grid gap-3 sm:grid-cols-3">
+      <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {todo.map((s) => (
           <Link
             key={s.label}

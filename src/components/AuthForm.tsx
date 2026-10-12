@@ -73,6 +73,14 @@ export default function AuthForm({ mode }: { mode: "login" | "register" }) {
           {mode === "register" ? t("goLogin") : t("goRegister")}
         </Link>
       </p>
+
+      {mode === "login" && (
+        <p className="mt-2 text-sm">
+          <Link href="/forgot" className="text-gray-500 hover:text-brand hover:underline">
+            {t("forgotPassword")}
+          </Link>
+        </p>
+      )}
     </div>
   );
 }

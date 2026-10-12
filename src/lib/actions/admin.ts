@@ -437,6 +437,11 @@ export async function adminResetPasswordAction(formData: FormData) {
     where: { id: userId },
     data: { passwordHash: await hashPassword(password) },
   });
+  // Setting a password is what a reset request was asking for, so close it.
+  await prisma.passwordResetRequest.updateMany({
+    where: { userId, status: "open" },
+    data: { status: "resolved" },
+  });
   revalidatePath(`/${locale}/admin/users`);
   redirect(`/${locale}/admin/users?pwOk=1`);
 }

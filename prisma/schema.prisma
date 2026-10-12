@@ -15,23 +15,24 @@ datasource db {
 // ─────────────────────────── Users & verification ───────────────────────────
 
 model User {
-  id                 String   @id @default(cuid())
-  email              String   @unique
+  id                 String    @id @default(cuid())
+  email              String    @unique
   phone              String?
   passwordHash       String
   name               String
-  role               String   @default("student") // student | admin
-  verificationStatus String   @default("unverified") // unverified | pending | approved | rejected
+  role               String    @default("student") // student | admin
+  verificationStatus String    @default("unverified") // unverified | pending | approved | rejected
   dateOfBirth        DateTime? // collected at registration; matched against the CI number
   university         String?
   campus             String?
-  locale             String   @default("es") // es | en
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  locale             String    @default("es") // es | en
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
-  listings     Listing[]
-  verification StudentVerification?
-  payments     Payment[]
+  listings      Listing[]
+  verification  StudentVerification?
+  payments      Payment[]
+  resetRequests PasswordResetRequest[]
 }
 
 model StudentVerification {
@@ -169,4 +170,17 @@ model Report {
   reason     String
   status     String   @default("open") // open | resolved | dismissed
   createdAt  DateTime @default(now())
+}
+
+// A student asking for a new password. There is no mail provider, so this is a
+// queue an admin works by hand, the same as the CI verification queue: the
+// admin sets a new password and passes it on out of band (WhatsApp, in person).
+model PasswordResetRequest {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    String   @default("open") // open | resolved
+  createdAt DateTime @default(now())
+
+  @@index([status])
 }

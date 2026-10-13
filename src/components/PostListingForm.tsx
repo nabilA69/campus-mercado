@@ -92,7 +92,10 @@ export default function PostListingForm({
           value={province}
           onChange={(e) => {
             setProvince(e.target.value);
-            setUniversity(""); // universities depend on the province
+            // Universities are province-specific, so a pick from the old
+            // province is no longer valid — but a typed-in "Otra" value is,
+            // so keep it instead of silently discarding what was entered.
+            setUniversity((u) => (u === "__other__" ? u : ""));
           }}
           className={inputCls}
         >

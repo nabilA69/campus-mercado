@@ -58,13 +58,17 @@ async function saveToVercelBlob(
   bytes: Buffer,
   contentType: string,
 ): Promise<string> {
-  // @vercel/blob needs BLOB_READ_WRITE_TOKEN. Connecting a Blob store in the
-  // dashboard injects it; if it is missing the SDK throws and the whole request
-  // 500s, so fail with a message the caller can actually show a human.
+  // Two ways to authenticate, and the modern one needs no secret of ours:
+  //   OIDC            a store connected in the dashboard sets BLOB_STORE_ID and
+  //                   the SDK signs requests itself. Vercel recommends this and
+  //                   suggests revoking the standalone token.
+  //   explicit token  BLOB_READ_WRITE_TOKEN, for running outside Vercel.
+  // Demanding the token outright used to reject a perfectly working OIDC setup,
+  // so only pass it when it exists and let the SDK fall back to OIDC.
   const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token) {
+  if (!token && !process.env.BLOB_STORE_ID) {
     throw new StorageError(
-      "BLOB_READ_WRITE_TOKEN is not set. Connect the Blob store to this project (Vercel > Storage) or paste the token into the project's environment variables, then redeploy.",
+      "No Vercel Blob credentials. Connect a Blob store to this project (Vercel > Storage), which sets BLOB_STORE_ID, or set BLOB_READ_WRITE_TOKEN to run outside Vercel. Redeploy after either.",
     );
   }
 
@@ -74,7 +78,7 @@ async function saveToVercelBlob(
       access: "public",
       contentType,
       addRandomSuffix: false,
-      token,
+      ...(token ? { token } : {}),
     });
     return url;
   } catch (err) {

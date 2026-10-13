@@ -193,7 +193,7 @@
     "statusPending": "Pending",
     "statusConfirmed": "Confirmed",
     "statusRejected": "Rejected",
-    "instructions": "Pay the amount via Transfermóvil to the account below. An admin will confirm your payment and activate your purchase.",
+    "instructions": "Pay the exact amount with Transfermóvil to the card shown. An admin will confirm your payment and activate your purchase.",
     "scanQr": "Scan this code with Transfermóvil",
     "openApp": "Open Transfermóvil",
     "account": "Account / Card",
@@ -210,7 +210,15 @@
     },
     "waiting": "Waiting for admin confirmation.",
     "done": "Payment confirmed! Your purchase is active.",
-    "rejected": "The payment was rejected. Contact us if you think this is a mistake."
+    "rejected": "The payment was rejected. Contact us if you think this is a mistake.",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "refToSend": "Reference (put this in the concepto)",
+    "refToSendHint": "Copy this reference into the transfer's «Concepto» field. Without it, confirmation can take longer.",
+    "step1": "Open Transfermóvil and sign in.",
+    "step2": "Go to «Operaciones bancarias» → «Transferencias».",
+    "step3": "Paste the card number above and the exact amount, and put the reference in the concepto.",
+    "step4": "Confirm the transfer, then copy the transaction number the app gives you into the box below."
   },
   "adminNav": {
     "dashboard": "Dashboard",

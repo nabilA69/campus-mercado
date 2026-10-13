@@ -193,7 +193,7 @@
     "statusPending": "Pendiente",
     "statusConfirmed": "Confirmado",
     "statusRejected": "Rechazado",
-    "instructions": "Paga el monto con Transfermóvil a la cuenta indicada. Un administrador confirmará tu pago y activará tu compra.",
+    "instructions": "Paga el monto exacto con Transfermóvil a la tarjeta indicada. Un administrador confirmará tu pago y activará tu compra.",
     "scanQr": "Escanea este código con Transfermóvil",
     "openApp": "Abrir Transfermóvil",
     "account": "Cuenta / Tarjeta",
@@ -210,7 +210,15 @@
     },
     "waiting": "Esperando confirmación del administrador.",
     "done": "¡Pago confirmado! Tu compra está activa.",
-    "rejected": "El pago fue rechazado. Contáctanos si crees que es un error."
+    "rejected": "El pago fue rechazado. Contáctanos si crees que es un error.",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "refToSend": "Referencia (ponla en el concepto)",
+    "refToSendHint": "Copia esta referencia en el campo «Concepto» de la transferencia. Sin ella puede tardar más en confirmarse.",
+    "step1": "Abre Transfermóvil y entra con tu usuario.",
+    "step2": "Ve a «Operaciones bancarias» → «Transferencias».",
+    "step3": "Pega el número de tarjeta de arriba y el monto exacto, y escribe la referencia en el concepto.",
+    "step4": "Confirma la transferencia y copia aquí abajo el número de transacción que te da la app."
   },
   "adminNav": {
     "dashboard": "Panel",

@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { resolveQrImage, transfermovilDeepLink } from "@/lib/transfermovil";
 import PaymentReferenceForm from "@/components/PaymentReferenceForm";
+import CopyField from "@/components/CopyField";
 
 export default async function PayPage({
   params,
@@ -62,22 +63,22 @@ export default async function PayPage({
         <div className="mt-5 rounded-lg border border-amber-200 bg-amber-50 p-5">
           <p className="text-sm text-amber-900 mb-4">{t("instructions")}</p>
 
-          {/* Transfermóvil QR */}
-          <div className="flex flex-col items-center">
-            <p className="text-xs font-medium text-amber-800 mb-2">
-              {t("scanQr")}
-            </p>
-            {qrImage && (
-              // eslint-disable-next-line @next/next/no-img-element
+          {/* A QR only when the bank has actually issued one we can encode. */}
+          {qrImage && (
+            <div className="flex flex-col items-center">
+              <p className="mb-2 text-xs font-medium text-amber-800">
+                {t("scanQr")}
+              </p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={qrImage}
                 alt="Transfermóvil QR"
                 width={200}
                 height={200}
-                className="rounded-lg bg-white p-2 border border-amber-200"
+                className="rounded-lg border border-amber-200 bg-white p-2"
               />
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Deep-link to open the app (if configured) */}
           {deepLink && (
@@ -89,13 +90,28 @@ export default async function PayPage({
             </a>
           )}
 
-          {/* Account fallback */}
-          <div className="mt-4 rounded-md bg-white border border-amber-200 p-3 text-center">
-            <p className="text-xs text-gray-500">{t("account")}</p>
-            <p className="font-mono text-lg">
-              {account || t("notConfigured")}
-            </p>
-          </div>
+          {/* The two values the payer must get into Transfermóvil exactly. */}
+          {account ? (
+            <div className="mt-4 space-y-2">
+              <CopyField label={t("account")} value={account} />
+              <CopyField label={t("refToSend")} value={payment.id} />
+              <p className="text-xs text-amber-800">{t("refToSendHint")}</p>
+            </div>
+          ) : (
+            <div className="mt-4 rounded-md border border-amber-200 bg-white p-3 text-center">
+              <p className="font-mono text-lg text-gray-400">
+                {t("notConfigured")}
+              </p>
+            </div>
+          )}
+
+          {/* Exact menu path, so the payer is not hunting through the app. */}
+          <ol className="mt-4 list-decimal space-y-1 pl-5 text-sm text-amber-900">
+            <li>{t("step1")}</li>
+            <li>{t("step2")}</li>
+            <li>{t("step3")}</li>
+            <li>{t("step4")}</li>
+          </ol>
 
           {/* Payer submits their transaction reference */}
           <div className="mt-5 border-t border-amber-200 pt-4">

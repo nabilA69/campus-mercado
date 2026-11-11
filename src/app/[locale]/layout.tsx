@@ -36,7 +36,13 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className="h-full antialiased">
+    <html
+      lang={locale}
+      className="h-full antialiased"
+      /* The pre-paint script below stamps data-splash on this element,
+         so the server markup and the hydrated DOM differ by design. */
+      suppressHydrationWarning
+    >
       <head>
         {/* Runs before paint: if the splash was already shown this session, hide it
             via CSS immediately so repeat navigations don't flash it. */}

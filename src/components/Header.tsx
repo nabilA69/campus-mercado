@@ -20,6 +20,16 @@ export default async function Header() {
 
         {/* h-10 on every control = comfortable ~40px thumb targets on phones */}
         <nav className="flex items-center gap-1 sm:gap-3 text-sm shrink-0">
+          {/* The root is the pitch now, so the feed needs a door of its own.
+              Unlike "Publicar", this one stays visible on phones: browsing is
+              what most people come to do. */}
+          <Link
+            href="/anuncios"
+            className="inline-flex h-10 items-center px-2 font-medium text-gray-600 hover:text-brand"
+          >
+            {t("browse")}
+          </Link>
+
           <Link
             href="/post"
             className="hidden sm:inline-flex items-center h-10 px-2 text-gray-600 hover:text-brand"

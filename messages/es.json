@@ -11,7 +11,8 @@
     "myAccount": "Mi cuenta",
     "verify": "Verificar estudiante",
     "admin": "Admin",
-    "logout": "Salir"
+    "logout": "Salir",
+    "browse": "Anuncios"
   },
   "home": {
     "heroTitle": "El mercado solo para estudiantes",

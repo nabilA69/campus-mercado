@@ -54,7 +54,7 @@ export default async function ListingPage({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <Link href="/" className="text-sm text-gray-500 hover:text-brand">
+      <Link href="/anuncios" className="text-sm text-gray-500 hover:text-brand">
         ← {t("backHome")}
       </Link>
 

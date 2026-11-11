@@ -11,7 +11,8 @@
     "myAccount": "My account",
     "verify": "Verify as student",
     "admin": "Admin",
-    "logout": "Log out"
+    "logout": "Log out",
+    "browse": "Listings"
   },
   "home": {
     "heroTitle": "The students-only marketplace",

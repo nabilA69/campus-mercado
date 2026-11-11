@@ -1,13 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f6f8fa;
-  --foreground: #14213d;
-  /* Brand palette taken from the logo: navy (trust / campus) + green (market / action) */
-  --navy: #13315f;
-  --navy-dark: #0d2547;
-  --brand: #6cb023; /* primary action green */
-  --brand-dark: #5a9a1b;
+  --background: #f4f8f9;
+  --foreground: #0f2630;
+  /* Sea blue leads: it carries every action, and green steps back to the logo
+     and to success states. That split is also what the colours now mean —
+     blue = do something, green = it worked, amber = somebody paid for it.
+     The old action green failed WCAG AA on white (2.67:1, against a 4.5
+     threshold) for both button labels and price text; sea blue clears it. */
+  --navy: #0d5a74; /* deep sea — headings, badges, listing titles */
+  --navy-dark: #094758;
+  --brand: #0e7b9b; /* primary action (4.86:1 with white) */
+  --brand-dark: #0a6680; /* hover / pressed (6.51:1) */
+  --leaf: #6cb023; /* the logo's green, kept so it still has a name */
+
+  /* Hero accents. Every one has a reason to exist next to sea blue rather
+     than being picked for variety:
+       turquesa  analogous, one step round the wheel from --brand
+       leaf      already the logo's green
+       sol       already the paid-placement amber
+       coral     the complement of sea blue, and the only warm pop
+     Nothing else is admitted. A rainbow reads as decoration; four related
+     colours read as a brand with range. */
+  --turquesa: #12b5c9;
+  --sol: #ffc53d;
+  --coral: #ff6b5a;
+}
+
+@theme inline {
+  --color-leaf: var(--leaf);
+  --color-turquesa: var(--turquesa);
+  --color-sol: var(--sol);
+  --color-coral: var(--coral);
 }
 
 @theme inline {
@@ -208,4 +232,174 @@ html[data-splash="seen"] .cm-splash {
   .cm-letter {
     animation: none;
   }
+}
+
+/* ── Landing page ─────────────────────────────────────────────────────────
+   Motion here is CSS only. No animation library: every kilobyte is paid for
+   by a student on a Cuban mobile connection, and transform/opacity keyframes
+   cost nothing to download and run on the compositor.                      */
+
+@keyframes lp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Each element sets --d; the cascade does the choreography, no JS observer. */
+.lp-rise {
+  animation: lp-rise 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes lp-sheen {
+  from { background-position: 0% 50%; }
+  to { background-position: 200% 50%; }
+}
+.lp-sheen {
+  background-size: 200% auto;
+  animation: lp-sheen 7s linear infinite;
+}
+
+@keyframes lp-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(var(--r, 0deg)); }
+  50% { transform: translate3d(0, -14px, 0) rotate(var(--r, 0deg)); }
+}
+.lp-drift {
+  animation: lp-drift var(--dur, 7s) ease-in-out var(--d, 0ms) infinite;
+}
+
+@keyframes lp-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.lp-marquee {
+  animation: lp-marquee 38s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-rise,
+  .lp-sheen,
+  .lp-drift,
+  .lp-marquee {
+    animation: none;
+  }
+  .lp-rise { opacity: 1; transform: none; }
+}
+
+/* ── Hero showcase: six CSS 3D scenes behind a swipeable slideshow ────────
+   Pure transforms and opacity, so nothing is downloaded and nothing touches
+   layout. Only the visible slide animates; the rest are paused, which keeps
+   five idle scenes off a cheap phone's compositor.                        */
+
+.hx-stage { perspective: 950px; }
+.hx-slide[data-off="true"] * { animation-play-state: paused !important; }
+
+/* K · túnel */
+.hx-tunnel { position: absolute; inset: 0; transform-style: preserve-3d; }
+.hx-tunnel i {
+  position: absolute; left: 50%; top: 50%; width: 124px; height: 78px; margin: -39px 0 0 -62px;
+  border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: hx-fly 5s linear var(--d) infinite; opacity: 0;
+}
+@keyframes hx-fly {
+  0% { transform: translateZ(-900px) rotate(var(--r)); opacity: 0; }
+  18%, 82% { opacity: 1; }
+  100% { transform: translateZ(300px) rotate(var(--r)); opacity: 0; }
+}
+
+/* E · carrusel */
+.hx-ring { width: 128px; height: 148px; position: relative; transform-style: preserve-3d; animation: hx-ring 20s linear infinite; }
+@keyframes hx-ring { from { transform: rotateX(-10deg) rotateY(0); } to { transform: rotateX(-10deg) rotateY(360deg); } }
+.hx-ring b {
+  position: absolute; inset: 0; display: grid; place-items: center; border-radius: 13px;
+  font-size: 12px; font-weight: 800; color: #fff; text-align: center; padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  transform: rotateY(var(--a)) translateZ(126px);
+}
+
+/* F · torre */
+.hx-tower { width: 168px; height: 168px; position: relative; transform-style: preserve-3d; transform: rotateX(54deg) rotateZ(-38deg); }
+.hx-tower i {
+  position: absolute; left: 0; top: 0; width: 148px; height: 148px; border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+  animation: hx-stack 5.5s ease-in-out var(--d) infinite;
+}
+@keyframes hx-stack {
+  0% { transform: translateZ(var(--z)) translate3d(90px, -90px, 0); opacity: 0; }
+  22%, 78% { transform: translateZ(var(--z)); opacity: 1; }
+  100% { transform: translateZ(var(--z)) translate3d(-90px, 90px, 0); opacity: 0; }
+}
+
+/* L · carrito */
+.hx-cart { width: 160px; height: 132px; position: relative; transform-style: preserve-3d; animation: hx-roll 6s ease-in-out infinite; }
+@keyframes hx-roll {
+  0%, 100% { transform: rotateY(-24deg) rotateX(8deg) translateY(0); }
+  50% { transform: rotateY(24deg) rotateX(8deg) translateY(-9px); }
+}
+.hx-basket { position: absolute; left: 14px; top: 16px; width: 112px; height: 66px; transform-style: preserve-3d; }
+.hx-basket i { position: absolute; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 4px; }
+.hx-goods { position: absolute; left: 50%; top: -6px; transform-style: preserve-3d; }
+.hx-goods i { position: absolute; width: 26px; height: 26px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.4); animation: hx-bob 3.2s ease-in-out var(--d) infinite; }
+@keyframes hx-bob {
+  0%, 100% { transform: var(--p) translateY(0) rotateY(0); }
+  50% { transform: var(--p) translateY(-13px) rotateY(180deg); }
+}
+.hx-wheel { position: absolute; bottom: 2px; width: 24px; height: 24px; border-radius: 50%; background: #0b2b36; border: 3px solid #14566b; animation: hx-spin 1.8s linear infinite; }
+@keyframes hx-spin { to { transform: rotate(360deg); } }
+
+/* O · la caja */
+.hx-box { width: 116px; height: 116px; position: relative; transform-style: preserve-3d; animation: hx-turn 10s ease-in-out infinite; }
+@keyframes hx-turn {
+  0%, 100% { transform: rotateX(-18deg) rotateY(-26deg); }
+  50% { transform: rotateX(-18deg) rotateY(26deg); }
+}
+.hx-box > i { position: absolute; width: 116px; height: 86px; bottom: 0; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 4px; }
+.hx-lid {
+  position: absolute; left: 0; top: 24px; width: 116px; height: 116px; border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.35); transform-origin: 50% 0%;
+  animation: hx-lid 4.6s ease-in-out infinite;
+}
+@keyframes hx-lid {
+  0%, 22% { transform: rotateX(90deg) translateZ(-58px); }
+  44%, 78% { transform: rotateX(172deg) translateZ(-58px); }
+  100% { transform: rotateX(90deg) translateZ(-58px); }
+}
+.hx-pops { position: absolute; left: 50%; top: 10px; transform-style: preserve-3d; }
+.hx-pops i { position: absolute; width: 24px; height: 24px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.45); opacity: 0; animation: hx-pop 4.6s ease-in-out var(--d) infinite; }
+@keyframes hx-pop {
+  0%, 26% { transform: translate3d(0, 0, 0) scale(0.3); opacity: 0; }
+  52% { transform: var(--p) scale(1) rotateY(180deg); opacity: 1; }
+  74% { transform: var(--p) scale(1) rotateY(360deg); opacity: 1; }
+  100% { transform: translate3d(0, 0, 0) scale(0.3); opacity: 0; }
+}
+
+/* G · monedas */
+.hx-coins { position: absolute; inset: 0; transform-style: preserve-3d; }
+.hx-coins i {
+  position: absolute; top: -56px; width: 46px; height: 46px; border-radius: 50%;
+  transform-style: preserve-3d; display: grid; place-items: center;
+  font-size: 15px; font-weight: 900; font-style: normal;
+  animation: hx-fall var(--dur) linear var(--d) infinite;
+}
+@keyframes hx-fall {
+  0% { transform: translateY(0) rotateY(0) rotateZ(-8deg); opacity: 0; }
+  12%, 88% { opacity: 1; }
+  100% { transform: translateY(320px) rotateY(900deg) rotateZ(8deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-tunnel i, .hx-ring, .hx-tower i, .hx-cart, .hx-goods i, .hx-wheel,
+  .hx-box, .hx-lid, .hx-pops i, .hx-coins i {
+    animation: none;
+  }
+  .hx-tunnel i { opacity: 1; }
+  .hx-pops i { opacity: 1; transform: var(--p); }
+  .hx-lid { transform: rotateX(172deg) translateZ(-58px); }
+  .hx-coins i { opacity: 1; top: 38%; }
 }

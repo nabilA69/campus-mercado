@@ -24,13 +24,13 @@ const SLIDES: Slide[] = [
   {
     key: "free",
     href: "/post",
-    bg: "from-[#6cb023] via-[#5a9a1b] to-[#3f7a10]",
+    bg: "from-[#1296b8] via-[#0e7b9b] to-[#0a6680]",
     icon: "🏷️",
   },
   {
     key: "verified",
     href: "/register",
-    bg: "from-[#2b5290] via-[#13315f] to-[#0b1f3f]",
+    bg: "from-[#17728c] via-[#0d5a74] to-[#07394a]",
     icon: "🎓",
   },
   {

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser, hashPassword } from "@/lib/auth";
 import { BOOST_TIERS, isBoostTier } from "@/lib/boosts";
-import { saveImage, isAllowedImage } from "@/lib/storage";
+import { saveImage, isAllowedImage, uploadErrorKey } from "@/lib/storage";
 import { normalizeUrl, isAdPosition } from "@/lib/urls";
 import { isProvinceSlug } from "@/lib/provinces";
 import { slugify } from "@/lib/slug";
@@ -95,7 +95,7 @@ export async function createAdSlotAction(
       imageUrl = await saveImage(file, "ads");
     } catch (err) {
       console.error("[ads] image upload failed:", err);
-      return { error: "storageUnavailable" };
+      return { error: uploadErrorKey(err) };
     }
   } else {
     imageUrl = normalizeUrl(formData.get("imageUrl") as string);

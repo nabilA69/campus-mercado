@@ -84,7 +84,8 @@
       "ciMismatch": "El No. CI no coincide con tu fecha de nacimiento. Revisa el número o tu fecha de nacimiento.",
       "notCarne": "No reconocimos un Carné de Identidad en la foto. Sube una foto clara del frente completo del carné.",
       "unreadable": "No pudimos leer el No. CI con claridad. Toma la foto con buena luz, enfocada y sin reflejos, e inténtalo de nuevo.",
-      "typedMismatch": "El número que escribiste no coincide con el del carné en la foto."
+      "typedMismatch": "El número que escribiste no coincide con el del carné en la foto.",
+      "underReview": "Recibimos tu carné, pero no pudimos revisarlo automáticamente en este momento. Un administrador lo revisará y te avisaremos. No hace falta que lo envíes de nuevo."
     }
   },
   "admin": {
@@ -136,7 +137,9 @@
       "categoryRequired": "Elige una categoría.",
       "contactRequired": "Indica un contacto válido.",
       "imageType": "Las fotos deben ser JPG, PNG o WebP.",
-      "storageUnavailable": "No pudimos guardar las fotos ahora mismo. Inténtalo de nuevo, o publica el anuncio sin fotos."
+      "storageUnavailable": "No pudimos guardar las fotos ahora mismo. Inténtalo de nuevo, o publica el anuncio sin fotos.",
+      "imageTooLarge": "Esa foto pesa demasiado (máximo 12 MB). Haz una foto más pequeña o redúcela antes de subirla.",
+      "imageUnreadable": "No pudimos leer esa imagen. Asegúrate de que sea una foto JPG, PNG o WebP válida."
     }
   },
   "listing": {
@@ -288,7 +291,9 @@
       "imageRequired": "Debes subir una imagen o indicar la URL de una imagen.",
       "badTargetUrl": "El enlace de destino no es válido. Ejemplo: ejemplo.com",
       "badDateRange": "La fecha de fin no puede ser anterior a la de inicio.",
-      "storageUnavailable": "No se pudo guardar la imagen: el almacenamiento no está configurado. Conecta el Blob Store en Vercel (Storage) y vuelve a desplegar. Mientras tanto puedes usar la URL de una imagen."
+      "storageUnavailable": "No se pudo guardar la imagen: el almacenamiento no está configurado. Conecta el Blob Store en Vercel (Storage) y vuelve a desplegar. Mientras tanto puedes usar la URL de una imagen.",
+      "imageTooLarge": "Esa foto pesa demasiado (máximo 12 MB). Haz una foto más pequeña o redúcela antes de subirla.",
+      "imageUnreadable": "No pudimos leer esa imagen. Asegúrate de que sea una foto JPG, PNG o WebP válida."
     },
     "existing": "Espacios existentes",
     "none": "No hay espacios publicitarios.",
@@ -491,5 +496,43 @@
   "pager": {
     "prev": "Anterior",
     "next": "Siguiente"
+  },
+  "landing": {
+    "heroLine1": "Todo lo que necesitas,",
+    "heroAccent": "de estudiante a estudiante.",
+    "heroSub": "Compra y vende dentro de tu universidad. Cada persona aquí verificó su carné antes de publicar.",
+    "ctaPrimary": "Crear mi cuenta",
+    "ctaSecondary": "Ver los anuncios",
+    "emptyShowcase": "Todavía no hay anuncios. Publica el primero.",
+    "statAds": "Anuncios activos",
+    "statStudents": "Estudiantes verificados",
+    "statProvinces": "Provincias",
+    "statCategories": "Categorías",
+    "trustLine": "Nadie entra sin carné.",
+    "trustBody": "Para publicar hay que subir una foto del Carné de Identidad y los primeros seis dígitos del No. CI tienen que coincidir con tu fecha de nacimiento. No es un mercado abierto a cualquiera: es el tuyo y el de tus compañeros.",
+    "howTitle": "De registrarte a vender, en una tarde",
+    "step1Title": "Verifica tu carné",
+    "step1Body": "Subes una foto del frente del carné y escribes tu No. CI. La comprobación es automática.",
+    "step2Title": "Publica lo que ya no usas",
+    "step2Body": "Libros, calculadora, bicicleta, un cuarto cerca de la facultad. Con fotos y tu precio.",
+    "step3Title": "Te escriben por WhatsApp",
+    "step3Body": "El comprador toca tu contacto y te escribe directo. Sin intermediarios y sin comisión.",
+    "reachLabel": "Disponible en toda Cuba",
+    "closeTitle": "Tu facultad ya está aquí. Únete."
+  },
+  "hero3d": {
+    "label": "Qué puedes hacer aquí",
+    "tunnel": "Anuncios nuevos cada día",
+    "ring": "Todo lo que se mueve en tu facultad",
+    "tower": "Publicar toma un minuto",
+    "cart": "Compra sin comisión",
+    "box": "Lo que ya no usas vale",
+    "coins": "En CUP, USD o MLC",
+    "cLibros": "LIBROS",
+    "cBici": "BICI",
+    "cLaptop": "LAPTOP",
+    "cCuarto": "CUARTO",
+    "cTutor": "TUTORÍAS",
+    "cRopa": "ROPA"
   }
 }

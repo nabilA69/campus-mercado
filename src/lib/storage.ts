@@ -2,6 +2,7 @@ import "server-only";
 import { writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import { processImage, MAX_UPLOAD_BYTES } from "@/lib/images";
 
 // Storage abstraction so uploads work both locally (disk) and in production.
 //   STORAGE_DRIVER=local        -> writes to /public/uploads (dev, or a host with a persistent volume)
@@ -41,16 +42,36 @@ export async function saveImage(
   return saveImageBytes(bytes, file.type, folder);
 }
 
-/** Save raw image bytes (when you've already read the file) and return the URL. */
+/**
+ * Save raw image bytes (when you've already read the file) and return the URL.
+ * Everything is resized and re-encoded on the way through — see processImage.
+ */
 export async function saveImageBytes(
   bytes: Buffer,
   contentType: string,
   folder: UploadFolder,
 ): Promise<string> {
-  const key = `${folder}/${randomUUID()}.${extFor(contentType)}`;
-  if (DRIVER === "vercel-blob") return saveToVercelBlob(key, bytes, contentType);
-  if (DRIVER === "s3") return saveToS3(key, bytes, contentType);
-  return saveToLocal(key, bytes);
+  if (bytes.byteLength > MAX_UPLOAD_BYTES) {
+    throw new StorageError("imageTooLarge");
+  }
+
+  let out: Buffer = bytes;
+  let outType = contentType;
+  try {
+    const processed = await processImage(bytes, folder);
+    out = processed.bytes;
+    outType = processed.contentType;
+  } catch {
+    // isAllowedImage only trusts the client-declared MIME type. If the decoder
+    // cannot read the bytes, this is not the image it claims to be, so refuse
+    // it rather than storing an unknown file under an image name.
+    throw new StorageError("imageUnreadable");
+  }
+
+  const key = `${folder}/${randomUUID()}.${extFor(outType)}`;
+  if (DRIVER === "vercel-blob") return saveToVercelBlob(key, out, outType);
+  if (DRIVER === "s3") return saveToS3(key, out, outType);
+  return saveToLocal(key, out);
 }
 
 async function saveToVercelBlob(
@@ -123,4 +144,22 @@ async function saveToS3(
 
   const base = (process.env.S3_PUBLIC_URL || "").replace(/\/$/, "");
   return `${base}/${key}`;
+}
+
+/** Error codes a StorageError may carry, for callers to turn into a message. */
+const STORAGE_CODES = ["imageTooLarge", "imageUnreadable"] as const;
+
+/**
+ * Turn a thrown upload error into a translation key. Anything we did not raise
+ * deliberately is reported as the generic "storage is down" message, since the
+ * real cause (a missing bucket, a network blip) is not the user's to act on.
+ */
+export function uploadErrorKey(err: unknown): string {
+  if (
+    err instanceof StorageError &&
+    (STORAGE_CODES as readonly string[]).includes(err.message)
+  ) {
+    return err.message;
+  }
+  return "storageUnavailable";
 }

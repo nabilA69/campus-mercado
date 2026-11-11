@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { saveImage, isAllowedImage } from "@/lib/storage";
+import { saveImage, isAllowedImage, uploadErrorKey } from "@/lib/storage";
 import { isProvinceSlug } from "@/lib/provinces";
 
 export type ListingState = { error?: string };
@@ -83,7 +83,7 @@ export async function createListingAction(
       imageUrls.push(await saveImage(file, "listings"));
     } catch (err) {
       console.error("[listings] image upload failed:", err);
-      return { error: "storageUnavailable" };
+      return { error: uploadErrorKey(err) };
     }
   }
 
@@ -196,7 +196,7 @@ export async function updateListingAction(
       imageUrls.push(await saveImage(file, "listings"));
     } catch (err) {
       console.error("[listings] image upload failed:", err);
-      return { error: "storageUnavailable" };
+      return { error: uploadErrorKey(err) };
     }
   }
 

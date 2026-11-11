@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { saveImageBytes, isAllowedImage } from "@/lib/storage";
+import { imageForVision } from "@/lib/images";
 import { isValidCiFormat, ciMatchesDob } from "@/lib/ci";
 import { verifyCarneImage, aiVisionConfigured } from "@/lib/verify-ci-ai";
 
@@ -58,35 +59,61 @@ export async function submitVerificationAction(
   let ciNumber: string | null;
   let reason: string;
   let note: string | undefined;
+  // "pending" sends the submission to the admin queue instead of deciding it.
+  let status: string;
 
   if (useAi) {
+    // Send a downscaled JPEG, not the original: every provider accepts JPEG,
+    // and a 5 MB photo becomes a 7 MB base64 payload that is slow and may
+    // exceed request limits outright.
+    let visionBytes: Buffer = bytes;
+    let visionType: string = file.type;
+    try {
+      const v = await imageForVision(bytes);
+      visionBytes = v.bytes;
+      visionType = v.contentType;
+    } catch {
+      // Unreadable by the decoder; let the model judge the original.
+    }
+
     const decision = await verifyCarneImage({
-      base64: bytes.toString("base64"),
-      mediaType: file.type,
+      base64: visionBytes.toString("base64"),
+      mediaType: visionType,
       dob: user.dateOfBirth,
       typedCi,
     });
     note = decision.detail;
 
-    if (decision.reason === "ai_error" || decision.reason === "not_configured") {
-      // Provider hiccup: fall back to the deterministic typed-CI check so a
-      // student is never blocked by our infrastructure.
+    if (decision.reason === "not_configured") {
+      // No provider set up at all: this is the deliberate deterministic mode,
+      // so run the typed-CI check exactly as the non-AI path does.
       approved = isValidCiFormat(typedCi) && ciMatchesDob(typedCi, user.dateOfBirth);
       ciNumber = typedCi || null;
       reason = approved ? "approved" : "ci_mismatch";
-      note = `ai_unavailable(${decision.detail ?? ""}) -> fallback`;
+      status = approved ? "approved" : "rejected";
+    } else if (decision.reason === "ai_error") {
+      // The provider failed on THIS submission while working generally. Falling
+      // back to the typed number would approve on a self-consistent CI alone,
+      // skipping the "is this really a carné" check — which anyone able to
+      // provoke an error could do on purpose. A human looks instead; nobody is
+      // blocked, and the photo check is not silently dropped.
+      approved = false;
+      ciNumber = typedCi || null;
+      reason = "ai_unavailable";
+      status = "pending";
+      note = `ai_error(${decision.detail ?? ""}) -> manual review`;
     } else {
       approved = decision.approved;
       ciNumber = decision.ciNumber ?? (typedCi || null);
       reason = decision.reason;
+      status = approved ? "approved" : "rejected";
     }
   } else {
     approved = ciMatchesDob(typedCi, user.dateOfBirth);
     ciNumber = typedCi;
     reason = approved ? "approved" : "ci_mismatch";
+    status = approved ? "approved" : "rejected";
   }
-
-  const status = approved ? "approved" : "rejected";
   const record = {
     idCardImageUrl: url,
     ciNumber,

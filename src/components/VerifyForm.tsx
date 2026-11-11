@@ -108,20 +108,29 @@ export default function VerifyForm() {
         />
       </label>
 
-      {state.reason && state.reason !== "approved" && (
-        <p className="text-sm text-red-600">
-          {t(
-            `results.${
-              {
-                ci_mismatch: "ciMismatch",
-                not_carne: "notCarne",
-                unreadable: "unreadable",
-                typed_mismatch: "typedMismatch",
-              }[state.reason] ?? "ciMismatch"
-            }`,
-          )}
+      {/* "Waiting for a human" is not a rejection, so it does not read as one. */}
+      {state.reason === "ai_unavailable" && (
+        <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+          {t("results.underReview")}
         </p>
       )}
+
+      {state.reason &&
+        state.reason !== "approved" &&
+        state.reason !== "ai_unavailable" && (
+          <p className="text-sm text-red-600">
+            {t(
+              `results.${
+                {
+                  ci_mismatch: "ciMismatch",
+                  not_carne: "notCarne",
+                  unreadable: "unreadable",
+                  typed_mismatch: "typedMismatch",
+                }[state.reason] ?? "ciMismatch"
+              }`,
+            )}
+          </p>
+        )}
       {state.error && (
         <p className="text-sm text-red-600">
           {state.error === "already" ? t("approved") : t(state.error)}
